@@ -41,9 +41,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 // 文字をカウントするクラス
 export class CharCount{
-	private _stringNum: number = 0;
-	private _lineNum: number = 0;
-	private _fileName: String = "none";
+	private _stringNum: number = 0; // 現在の文字数
+	private _lineNum: number = 0; // 現在の行数
+	private _fileName: String = "none"; // 現在のファイル名
+	private _nowFileNum: number = 0;
+
+	private _assenblyStrNum: Array<number> = []; // 各ファイルごとの文字数
+	private _assenblyLineNum: Array<number> = []; // 各ファイルごとの行数
+	private _assenblyFileName: Array<String> = []; // 各ファイルの名前
 
 	public updateCount(){
 		let editor = vscode.window.activeTextEditor; // 現在開いているエディタ情報を格納
@@ -52,6 +57,19 @@ export class CharCount{
 		}
 
 		let document = editor?.document; // editorのドキュメント
+
+		// assenbly内にdocumentのファイルがあるかどうか
+		if(this.searchFileName(document.fileName)){
+			this._assenblyStrNum[this._nowFileNum] = this.getNumChar(document); // 文字数を更新
+			this._assenblyLineNum[this._nowFileNum] = document.lineCount; // 行数を更新
+		}
+		else{
+			this._assenblyStrNum.push(this.getNumChar(document)); // 文字数を新たに追加
+			this._assenblyLineNum.push(document.lineCount); // 行数を新たに追加
+			this._assenblyFileName.push(document.fileName); // ファイル名を新たに追加
+
+			this._nowFileNum = this._assenblyFileName.length - 1 // 現在のファイルを更新
+		}
 
 		this._stringNum = this.getNumChar(document); // 文字数を更新
 		this._lineNum = document.lineCount; // 行数を更新
@@ -80,6 +98,23 @@ export class CharCount{
 		return this._stringNum;
 	}
 
+	/*
+		引数のファイル名と同じファイル名が格納されているかを確認し格納されていればtrue
+		格納されていなければfalseを返すメソッド
+		引数 name(String型) ... ファイル名
+		返り値 (boolean型)
+	*/
+	private searchFileName(name: String): boolean{
+		for(let i = 0; i < this._assenblyFileName.length; i++){
+			// iの時の_assenblyFileNameとnameが一致する時
+			if(name === this._assenblyFileName[i]){
+				this._nowFileNum = i; // 現在のファイルの場所を格納
+				return true; // trueを返す
+			}
+		}
+
+		return false; // falseを返す
+	}
 }
 
 class CharCountController{
