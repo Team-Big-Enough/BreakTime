@@ -68,7 +68,7 @@ export class CharCount{
 			this._assenblyLineNum.push(document.lineCount); // 行数を新たに追加
 			this._assenblyFileName.push(document.fileName); // ファイル名を新たに追加
 
-			this._nowFileNum = this._assenblyFileName.length - 1 // 現在のファイルを更新
+			this._nowFileNum = this._assenblyFileName.length - 1; // 現在のファイルを更新
 		}
 
 		this._stringNum = this.getNumChar(document); // 文字数を更新
