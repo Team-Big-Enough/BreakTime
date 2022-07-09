@@ -58,22 +58,25 @@ export class CharCount{
 
 		let document = editor?.document; // editorのドキュメント
 
-		// assenbly内にdocumentのファイルがあるかどうか
-		if(this.searchFileName(document.fileName)){
-			this._assenblyStrNum[this._nowFileNum] = this.getNumChar(document); // 文字数を更新
-			this._assenblyLineNum[this._nowFileNum] = document.lineCount; // 行数を更新
-		}
-		else{
-			this._assenblyStrNum.push(this.getNumChar(document)); // 文字数を新たに追加
-			this._assenblyLineNum.push(document.lineCount); // 行数を新たに追加
-			this._assenblyFileName.push(document.fileName); // ファイル名を新たに追加
-
-			this._nowFileNum = this._assenblyFileName.length - 1; // 現在のファイルを更新
-		}
 
 		this._stringNum = this.getNumChar(document); // 文字数を更新
 		this._lineNum = document.lineCount; // 行数を更新
 		this._fileName = document.fileName; // ファイル名を更新
+
+		// assenbly内にdocumentのファイルがあるかどうか
+		if(this.searchFileName(this._fileName)){
+			this._assenblyStrNum[this._nowFileNum] = this._stringNum; // 文字数を更新
+			this._assenblyLineNum[this._nowFileNum] = this._lineNum; // 行数を更新
+		}
+		else{
+			this._assenblyStrNum.push(this._stringNum); // 文字数を新たに追加
+			this._assenblyLineNum.push(this._lineNum); // 行数を新たに追加
+			this._assenblyFileName.push(this._fileName); // ファイル名を新たに追加
+
+			this._nowFileNum = this._assenblyFileName.length - 1; // 現在のファイルを更新
+		}
+
+		console.log(this._fileName + "..." + "charactors:" + this._stringNum + " lines:" + this._lineNum); // コンソールに現在のファイルの情報を追加
 
 	}
 
