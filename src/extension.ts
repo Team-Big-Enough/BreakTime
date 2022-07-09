@@ -44,7 +44,7 @@ export class CharCount{
 	private _stringNum: number = 0; // 現在の文字数
 	private _lineNum: number = 0; // 現在の行数
 	private _fileName: String = "none"; // 現在のファイル名
-	private _nowFileNum: number = 0;
+	private _nowFileNum: number = 0; // 現在操作するファイルの番号
 
 	private _assenblyStrNum: Array<number> = []; // 各ファイルごとの文字数
 	private _assenblyLineNum: Array<number> = []; // 各ファイルごとの行数
@@ -94,8 +94,35 @@ export class CharCount{
 		return strNum;
 	}
 
-	public returnStrNum(): number{
-		return this._stringNum;
+	/*
+		引数にファイル名が格納されていれば，そのファイルの文字数を，
+		格納されて居なければ全てのファイルの合計文字数を返す
+		引数 name(String型)...ファイル名
+		返り値 number(number型)...文字数
+	*/
+	public returnStrNum(name?: String): number{
+		let number = 0; // 返り値用
+
+		if(!name){ // 引数の記述がない場合
+			let sum = 0; // 文字数の合計
+
+			// 全ての文字数を求める
+			for(let i = 0; i < this._assenblyFileName.length; i++){
+				sum += this._assenblyStrNum[i]; // i の時のassenblyStrNumの数を足す
+			}
+
+			number = sum; // 返り値用の変数に合計を格納
+		}
+		else{
+			if(this.searchFileName(name)){
+				number = this._assenblyStrNum[this._nowFileNum];
+			}
+			else{
+				number = 0;
+			}
+		}
+
+		return number;
 	}
 
 	/*
