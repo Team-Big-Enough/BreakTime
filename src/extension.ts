@@ -24,22 +24,10 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('休憩してください！', {
 			modal: true,
 		});
-		// for(let i=1; i<=5; i++){
-		// 	// console.log(typeof(i));
-		// 	setTimeout( timer , i*1000, i, i+i);
-		// }
 
-		timer(0, 15);
-		// var id = setInterval(timer, 2000, 1, 0);
 
-		// if(min < 0 ){
-		// 	// clearTimeout(id);
-		// 	clearInterval(id);
-		// 	vscode.window.showInformationMessage('休憩終了です！', {
-		// 		modal: true,
-		// 	});
-		// }
-		
+		timer(2, 20);
+
 	});
 
 
@@ -52,6 +40,8 @@ export function deactivate() {}
 function timer(min: number, sec: number){
 	// vscode.window.showInformationMessage('3秒経過しました。');
 
+	// var id = setTimeout(timer, 1000, min, sec);
+
 	if(sec - 1 === -1){
 		min --;
 		sec = 59;
@@ -60,13 +50,14 @@ function timer(min: number, sec: number){
 		sec --;
 	}
 	console.log(min, sec);
-	vscode.window.showInformationMessage("残り"+min+ "分"+sec+'秒です!');
+	// vscode.window.showInformationMessage("残り"+min+ "分"+sec+"秒です!");
+	vscode.window.setStatusBarMessage("残り"+min+ "分"+sec+"秒です!", min*60000+sec*1000);
 	var id = setTimeout(timer, 1000, min, sec);
 	// var id = setInterval(timer, 2000, min, sec);
 
 	if(min < 0 ){
 		// clearTimeout(id);
-		clearInterval(id);
+		clearTimeout(id);
 		vscode.window.showInformationMessage('休憩終了です！', {
 			modal: true,
 		});
