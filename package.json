@@ -4,7 +4,7 @@
 	"description": "breaktime",
 	"version": "0.0.1",
 	"engines": {
-		"vscode": "^1.69.0"
+		"vscode": "^1.68.1"
 	},
 	"categories": [
 		"Other"
