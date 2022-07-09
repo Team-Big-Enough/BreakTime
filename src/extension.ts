@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as path from 'path';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -14,25 +15,49 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('vscode-breaktime.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		createWebView();
-		showModalMessage("aa");
-		// showModalMessage('Hello World from vscode-breaktime!');
-	});
-	
 
-	context.subscriptions.push(disposable);
+		// webviewはローカルリソースに直接アクセスできないらしい
+		// 読み込みたいときはWebview.asWebviewUri関数を使って、読み込める形に変換しないといけない
+		// https://code.visualstudio.com/api/extension-guides/webview#loading-local-content
+		// Create and show a new webview
+		const panel = vscode.window.createWebviewPanel(
+			'Graph', // Identifies the type of the webview. Used internally
+			'test area', // Title of the panel displayed to the user
+			vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
+			{enableScripts: true} // Webview options. More on these later.
+		);
+
+		const graphPath = vscode.Uri.file(
+			path.join(context.extensionPath, 'src', 'graph.js')
+		);
+		const graphSrc = panel.webview.asWebviewUri(graphPath);
+
+		panel.webview.html = getWebviewContent(graphSrc);
+	});
+
+	context.subscriptions.push(disposable);	
 }
 
-function createWebView(){
-	// Create and show a new webview
-	const panel = vscode.window.createWebviewPanel(
-		'Graph', // Identifies the type of the webview. Used internally
-		'test area', // Title of the panel displayed to the user
-		vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
-		{} // Webview options. More on these later.
-		);
+function getWebviewContent(graphSrc: vscode.Uri){
+	return `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>頭いかれそう</title>
+	</head>
+	<body>
+		<h1>頭いかれそう</h1>
+		<div>
+			<canvas id="graph" width="100%"></canvas>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
+		<script src=` + graphSrc + `></script>
+
+	</body>
+	</html>
+	`;
 }
 
 function showModalMessage(msg: string){
