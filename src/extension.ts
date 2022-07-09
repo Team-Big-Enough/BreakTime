@@ -7,9 +7,6 @@ import * as vscode from 'vscode';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	
-	let min: number;
-	let sec: number;
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -26,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 
 
-		timer(5, 0);
+		timer(5, 0); // 第一引数：分、第二引数：秒
 
 	});
 
@@ -55,6 +52,7 @@ function timer(min: number, sec: number){
 	var id = setTimeout(timer, 1000, min, sec);
 	// var id = setInterval(timer, 2000, min, sec);
 
+	// 終了
 	if(min < 0 ){
 		// clearTimeout(id);
 		clearTimeout(id);
