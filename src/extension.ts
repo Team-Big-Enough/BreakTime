@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 
 
-		timer(5, 0); // 第一引数：分、第二引数：秒
+		timer(0, 10); // 第一引数：分、第二引数：秒
 
 	});
 
