@@ -45,16 +45,21 @@ function getWebviewContent(graphSrc: vscode.Uri){
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>頭いかれそう</title>
+		<title>title</title>
 	</head>
 	<body>
-		<h1>頭いかれそう</h1>
+		<h1>title</h1>
+
+		<div class=""><input type="radio" name="analysis" value="bar" checked>縦棒グラフ</div>
+		<div class=""><input type="radio" name="analysis" value="Line">折れ線グラフ</div>
+		<div class=""><input type="radio" name="analysis" value="3">散布図</div>
+
 		<div>
 			<canvas id="graph" width="100%"></canvas>
 		</div>
+
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
 		<script src=` + graphSrc + `></script>
-
 	</body>
 	</html>
 	`;
