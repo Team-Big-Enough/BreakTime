@@ -16,8 +16,11 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('vscode-breaktime.helloWorld', () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from vscode-breaktime!');
+		showModalMessage('Hello World from vscode-breaktime!');
 	});
+	function showModalMessage(msg: string){
+		vscode.window.showInformationMessage(msg, {modal: true});
+	}
 
 	context.subscriptions.push(disposable);
 }
