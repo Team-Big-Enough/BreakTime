@@ -1,5 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+import { EndOfLineState } from 'typescript';
 import * as vscode from 'vscode';
 
 // this method is called when your extension is activated
@@ -21,8 +22,68 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 	});
 
+	/*
+	let editor = vscode.window.activeTextEditor; // 現在開いているエディタ
+	let document = editor?.document; // ドキュメント
+
+	let linePrev = 0; // ドキュメントの変更前の行数
+	let lineNow = document?.lineCount;
+	let line = 0; // 行数を格納する変数
+
+	line = lineNow - linePrev;
+	*/
+
+
+
+
 	context.subscriptions.push(disposable);
 }
 
+// 文字をカウントするクラス
+export class CharCount{
+	private _stringNum: number = 0;
+	private _lineNum: number = 0;
+	private _fileName: String = "none";
+
+	public updateCount(){
+		let editor = vscode.window.activeTextEditor; // 現在開いているエディタ情報を格納
+		if(!editor){ // "editor"がundefinedである場合
+			return;
+		}
+
+		let document = editor?.document; // editorのドキュメント
+
+		this._stringNum = this.getNumChar(document); // 文字数を更新
+		this._lineNum = document.lineCount; // 行数を更新
+		this._fileName = document.fileName; // ファイル名を更新
+
+	}
+
+	/* 引数であるドキュメントの文字数を返すメソッド
+		引数 document (vscode.TextDocument型)
+		返り値 strNum (number型) ... 文字数
+	*/
+	public getNumChar(document: vscode.TextDocument): number {
+		let strDoc = document.getText(); // ドキュメントの文字をString型で所得
+		let strNum : number = 0; // 文字数を格納するnumber型の変数
+
+		strDoc = strDoc.replace(/\s/g, ''); // 全ての空白を消す(正規表現 \s:空白, オプション  g:文字列全体)
+
+		if(strDoc !== ""){
+			strNum = strDoc.length; // strDocの文字数をstrNumに格納
+		}
+
+		return strNum;
+	}
+
+	public returnStrNum(): number{
+		return this._stringNum;
+	}
+
+}
+
+class CharCountController{
+
+}
 // this method is called when your extension is deactivated
 export function deactivate() {}
