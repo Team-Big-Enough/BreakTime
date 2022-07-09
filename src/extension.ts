@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 
 
-		timer(2, 20);
+		timer(5, 0);
 
 	});
 
