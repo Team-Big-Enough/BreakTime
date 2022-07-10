@@ -3,13 +3,13 @@
 import { countReset } from 'console';
 import * as vscode from 'vscode';
 
+const MINITES = 0; // m
+const SECONDS = 30; // s
+const INTERVAL = 30000; // ms : 1分
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	
-	let min: number;
-	let sec: number;
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -19,14 +19,9 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('vscode-breaktime.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('休憩してください！', {
-			modal: true,
-		});
 
-
-		timer(5, 0);
+		// setInterval(startbreak , INTERVAL);
+		setTimeout(startbreak, INTERVAL);
 
 	});
 
@@ -37,10 +32,21 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() {}
 
-function timer(min: number, sec: number){
-	// vscode.window.showInformationMessage('3秒経過しました。');
+/*
+タイマーをセットする
+*/
+function startbreak(){
+	vscode.window.showInformationMessage('休憩してください！', {
+		modal: true,
+	});
 
-	// var id = setTimeout(timer, 1000, min, sec);
+	timer(MINITES,SECONDS);// 分：秒
+}
+
+/*
+タイマー開始
+*/
+function timer(min: number, sec: number){
 
 	if(sec - 1 === -1){
 		min --;
@@ -56,11 +62,11 @@ function timer(min: number, sec: number){
 	// var id = setInterval(timer, 2000, min, sec);
 
 	if(min < 0 ){
-		// clearTimeout(id);
 		clearTimeout(id);
 		vscode.window.showInformationMessage('休憩終了です！', {
 			modal: true,
 		});
+		setTimeout(startbreak, INTERVAL);
 	}
 
 }
