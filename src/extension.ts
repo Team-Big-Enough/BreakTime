@@ -14,16 +14,9 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('vscode-breaktime.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		//vscode.window.showInformationMessage('休憩しましょう');
-		// function getWebviewContent(breaktime){
-		// }
-		// context.subscriptions.push(disposable);//この拡張機能の登録解除時にVS Codeから取得したリソースを解放するための処理
 	});
 
-	//const kyuukeiFigures = {'休憩': 'homelu.jpeg'};
-	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEixzkaQI4759eBna_CffZH0DkXV7w1cJV_QPcYJMRO8X5ZsLnXrqHJi3QxQFsrYY85aPCnunvHebaBS2hUayLfcSLPiz0GJBjcO7nwWq019lDW4qCDg6d3fCy7k4dHghyM3mTBO_XXn0ExyduUJu537k187TDICM1a-e1RckDLmv6BEjab9g_3SbaLQ/s640/1204639_s%20(1).jpg'};
+	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibNNjxJIu-0NU_bkVjslf6-CN7u6VGUUQsst4_-_PhGbaASpwuoDsF6fvtliWir7rfrB45XGZHdEbVCAp1utUWG7dhfWDp2-DG_r3-s0agCs5srD2qqRjaQdYXYE-iBd2BGloB_J62bjZYJ0pGdIAQsyMMNTCbJtaqVeUYtwfxB1SmxoNB-qQMQSGp/s1000/11792.gif'};
 	function getWebviewContent(kyuukeiResult: keyof typeof kyuukeiFigures) {
 		return `<!DOCTYPE html>
 		<html lang="ja">
@@ -41,8 +34,12 @@ export function activate(context: vscode.ExtensionContext) {
 	const panel = vscode.window.createWebviewPanel('breaktime',`お疲れ様です。${kyuukeiResult}のお時間です！`,vscode.ViewColumn.One,{});
 	panel.webview.html = getWebviewContent(kyuukeiResult);
 
-	// const message = vscode.window.showInformationMessage("Information Message!", {
-	// 	modal: true,
+	// (".confirm").modaal({
+	// 	type:'confirm',
+	// 	confirm_title: 'ログイン画面',//確認画面タイトル
+	// 	confirm_button_text: 'ログイン', //確認画面ボタンのテキスト
+	// 	confirm_cancel_button_text: 'キャンセル',//確認画面キャンセルボタンのテキスト
+	// 	confirm_content: 'ログインが必要です。<br>この画面はボタンを押さなければ閉じません。',//確認画面の内容
 	//   });
 }
 
