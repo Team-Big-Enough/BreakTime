@@ -54,18 +54,8 @@ export function activate(context: vscode.ExtensionContext) {
 	const panel = vscode.window.createWebviewPanel('breaktime',`お疲れ様です。${kyuukeiResult}のお時間です！`,vscode.ViewColumn.One,{});
 	panel.webview.html = getWebviewContent(kyuukeiResult);
 
-	// const message = vscode.window.showInformationMessage("Information Message!", {
-	// 	modal: true,
-	//   });
-
 
 	context.subscriptions.push(disposable);
-	// 	vscode.window.showInformationMessage('Hello World from vscode-breaktime!',{
-	// 		modal: true
-	// 	});
-
-	// 	//charcount.updateCount();
-	// });
 
 
 	// リソース解放
@@ -89,40 +79,40 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 	const graphSrc = panell.webview.asWebviewUri(graphPath);
 
-	panell.webview.html = getWebviewContent(graphSrc);
+	panell.webview.html = getWebviewContents(graphSrc);
 
 	// context.subscriptions.push(disposable);	
-}
 
-function getWebviewContent(graphSrc: vscode.Uri){
-	return `
-	<!DOCTYPE html>
-	<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>title</title>
-	</head>
-	<body>
-		<h1>title</h1>
-
-		<div class=""><input type="radio" name="analysis" value="bar" checked>縦棒グラフ</div>
-		<div class=""><input type="radio" name="analysis" value="Line">折れ線グラフ</div>
-		<div class=""><input type="radio" name="analysis" value="3">散布図</div>
-
-		<div>
-			<canvas id="graph" width="100%"></canvas>
-		</div>
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
-		<script src=` + graphSrc + `></script>
-	</body>
-	</html>
-	`;
-}
-
-function showModalMessage(msg: string){
-		vscode.window.showInformationMessage(msg, {modal: true});
+	function getWebviewContents(graphSrc: vscode.Uri){
+		return `
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>title</title>
+		</head>
+		<body>
+			<h1>title</h1>
+	
+			<div class=""><input type="radio" name="analysis" value="bar" checked>縦棒グラフ</div>
+			<div class=""><input type="radio" name="analysis" value="Line">折れ線グラフ</div>
+			<div class=""><input type="radio" name="analysis" value="3">散布図</div>
+	
+			<div>
+				<canvas id="graph" width="100%"></canvas>
+			</div>
+	
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
+			<script src=` + graphSrc + `></script>
+		</body>
+		</html>
+		`;
+	}
+	
+	function showModalMessage(msg: string){
+			vscode.window.showInformationMessage(msg, {modal: true});
+	}
 }
 
 // 文字をカウントするクラス
