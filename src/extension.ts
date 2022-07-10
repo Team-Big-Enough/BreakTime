@@ -1,10 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-<<<<<<< HEAD
+
 import { countReset } from 'console';
-=======
 import { EndOfLineState } from 'typescript';
->>>>>>> origin/kaoru
 import * as vscode from 'vscode';
 
 
@@ -26,7 +24,6 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('vscode-breaktime.helloWorld', () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
-<<<<<<< HEAD
 		vscode.window.showInformationMessage('休憩してください！', {
 			modal: true,
 		});
@@ -59,19 +56,19 @@ export function activate(context: vscode.ExtensionContext) {
 	// 	modal: true,
 	//   });
 
+	context.subscriptions.push(countEventCont);
 	context.subscriptions.push(disposable);
-=======
-		vscode.window.showInformationMessage('Hello World from vscode-breaktime!',{
-			modal: true
-		});
+	// 	vscode.window.showInformationMessage('Hello World from vscode-breaktime!',{
+	// 		modal: true
+	// 	});
 
-		//charcount.updateCount();
-	});
+	// 	//charcount.updateCount();
+	// });
 
 
 	// リソース解放
 	//context.subscriptions.push(disposable);
-	context.subscriptions.push(countEventCont);
+	
 }
 
 // 文字をカウントするクラス
@@ -256,7 +253,6 @@ class CountEventControler{
 	public dispose(){
 		this._disposable.dispose();
 	}
->>>>>>> origin/kaoru
 }
 
 
