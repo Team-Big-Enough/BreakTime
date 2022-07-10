@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 	// リソース解放
-	context.subscriptions.push(disposable);
+	//context.subscriptions.push(disposable);
 	context.subscriptions.push(countEventCont);
 }
 
@@ -204,6 +204,7 @@ class CountEventControler{
 		vscode.window.onDidChangeActiveTextEditor(this._onEvent, this, subscriptions); // エディタが移ると_onEventを動作
 		vscode.window.onDidChangeVisibleTextEditors(this._onEvent, this, subscriptions); // エディタ分割の際に_onEventを動作
 		vscode.window.onDidChangeWindowState(this._onEvent, this, subscriptions); // window単位のfocusが移ると_onEvent
+		vscode.window.onDidChangeTextEditorSelection(this._onEvent, this, subscriptions); // カーソル動くと動作
 
 		this._disposable = vscode.Disposable.from(...subscriptions);
 	}
