@@ -12,10 +12,12 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "vscode-breaktime" is now active!');
 
 	let charcount = new CharCount();
+	let countEventCont = new CountEventControler(charcount);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
+
 	let disposable = vscode.commands.registerCommand('vscode-breaktime.helloWorld', () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
@@ -23,10 +25,13 @@ export function activate(context: vscode.ExtensionContext) {
 			modal: true
 		});
 
-		charcount.updateCount();
+		//charcount.updateCount();
 	});
 
+
+	// リソース解放
 	context.subscriptions.push(disposable);
+	context.subscriptions.push(countEventCont);
 }
 
 // 文字をカウントするクラス
@@ -180,6 +185,35 @@ export class CharCount{
 		}
 
 		return false; // falseを返す
+	}
+}
+
+/**
+ * 入力イベントを管理するクラス
+ */
+class CountEventControler{
+	private _charcount: CharCount;
+	private _disposable: vscode.Disposable;
+
+	constructor(charcount: CharCount){
+		this._charcount = charcount; // 引数のものを代入
+		this._charcount.updateCount(); // エディタ情報を更新
+
+		let subscriptions: vscode.Disposable[] = [];
+
+		vscode.window.onDidChangeActiveTextEditor(this._onEvent, this, subscriptions); // エディタが移ると_onEventを動作
+		vscode.window.onDidChangeVisibleTextEditors(this._onEvent, this, subscriptions); // エディタ分割の際に_onEventを動作
+		vscode.window.onDidChangeWindowState(this._onEvent, this, subscriptions); // window単位のfocusが移ると_onEvent
+
+		this._disposable = vscode.Disposable.from(...subscriptions);
+	}
+
+	private _onEvent(){
+		this._charcount.updateCount();
+	}
+
+	public dispose(){
+		this._disposable.dispose();
 	}
 }
 
