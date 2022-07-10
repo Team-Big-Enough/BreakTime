@@ -36,7 +36,12 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	
-	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEixzkaQI4759eBna_CffZH0DkXV7w1cJV_QPcYJMRO8X5ZsLnXrqHJi3QxQFsrYY85aPCnunvHebaBS2hUayLfcSLPiz0GJBjcO7nwWq019lDW4qCDg6d3fCy7k4dHghyM3mTBO_XXn0ExyduUJu537k187TDICM1a-e1RckDLmv6BEjab9g_3SbaLQ/s640/1204639_s%20(1).jpg'};
+	// const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEixzkaQI4759eBna_CffZH0DkXV7w1cJV_QPcYJMRO8X5ZsLnXrqHJi3QxQFsrYY85aPCnunvHebaBS2hUayLfcSLPiz0GJBjcO7nwWq019lDW4qCDg6d3fCy7k4dHghyM3mTBO_XXn0ExyduUJu537k187TDICM1a-e1RckDLmv6BEjab9g_3SbaLQ/s640/1204639_s%20(1).jpg'};
+	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibNNjxJIu-0NU_bkVjslf6-CN7u6VGUUQsst4_-_PhGbaASpwuoDsF6fvtliWir7rfrB45XGZHdEbVCAp1utUWG7dhfWDp2-DG_r3-s0agCs5srD2qqRjaQdYXYE-iBd2BGloB_J62bjZYJ0pGdIAQsyMMNTCbJtaqVeUYtwfxB1SmxoNB-qQMQSGp/s1000/11792.gif'};
+
+
+	
+
 	function getWebviewContent(kyuukeiResult: keyof typeof kyuukeiFigures) {
 		return `<!DOCTYPE html>
 		<html lang="ja">
@@ -53,7 +58,6 @@ export function activate(context: vscode.ExtensionContext) {
 	const kyuukeiResult = kyuukeiCandidates[Math.floor(Math.random() * kyuukeiCandidates.length)];
 	const panel = vscode.window.createWebviewPanel('breaktime',`お疲れ様です。${kyuukeiResult}のお時間です！`,vscode.ViewColumn.One,{});
 	panel.webview.html = getWebviewContent(kyuukeiResult);
-
 
 	context.subscriptions.push(disposable);
 
@@ -113,6 +117,7 @@ export function activate(context: vscode.ExtensionContext) {
 	function showModalMessage(msg: string){
 			vscode.window.showInformationMessage(msg, {modal: true});
 	}
+
 }
 
 // 文字をカウントするクラス
