@@ -76,8 +76,8 @@ export class CharCount{
 			this._nowFileNum = this._assenblyFileName.length - 1; // 現在のファイルを更新
 		}
 
-		console.log(this._fileName + " ..." + "charactors:" + this._stringNum + " lines:" + this._lineNum); // コンソールに現在のファイルの情報を追加
-		console.log("sum..." + " charactors: " + this.returnStrNum());
+		//console.log(this._fileName + " ..." + "charactors:" + this._stringNum + " lines:" + this._lineNum); // コンソールに現在のファイルの情報を追加
+		console.log("sum..." + " charactors: " + this.returnStrNum() + " lines" + this.returnLineNum());
 
 	}
 
