@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 
 const MINITES = 0; // m
 const SECONDS = 30; // s
-const INTERVAL = 30000; // ms : 1分
+const INTERVAL = 30000; // ms : 30秒
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
