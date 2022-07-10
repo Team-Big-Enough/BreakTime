@@ -6,6 +6,9 @@ import { EndOfLineState } from 'typescript';
 import * as vscode from 'vscode';
 import * as path from 'path';
 
+const MINITES = 0; // m
+const SECONDS = 30; // s
+const INTERVAL = 30000; // ms : 30秒
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -30,8 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
 			modal: true,
 		});
 
-
-		timer(0, 10); // 第一引数：分、第二引数：秒
+		setTimeout(startbreak, INTERVAL);
 
 	});
 
@@ -308,10 +310,21 @@ class CountEventControler{
 // this method is called when your extension is deactivated
 export function deactivate() {}
 
-function timer(min: number, sec: number){
-	// vscode.window.showInformationMessage('3秒経過しました。');
+/*
+タイマーをセットする
+*/
+function startbreak(){
+	vscode.window.showInformationMessage('休憩してください！', {
+		modal: true,
+	});
 
-	// var id = setTimeout(timer, 1000, min, sec);
+	timer(MINITES,SECONDS);// 分：秒
+}
+
+/*
+タイマー開始
+*/
+function timer(min: number, sec: number){
 
 	if(sec - 1 === -1){
 		min --;
@@ -328,11 +341,11 @@ function timer(min: number, sec: number){
 
 	// 終了
 	if(min < 0 ){
-		// clearTimeout(id);
 		clearTimeout(id);
 		vscode.window.showInformationMessage('休憩終了です！', {
 			modal: true,
 		});
+		setTimeout(startbreak, INTERVAL);
 	}
 
 }
