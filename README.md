@@ -1,6 +1,6 @@
-# vscode-breaktime README
+# BreakTime README
 
-This is the README for your extension "vscode-breaktime". This will notify you after a certain amount of time on the vscode, prompting you to take a break.
+This is the README for your extension "BreakTime". This will notify you after a certain amount of time on the vscode, prompting you to take a break.
 
 ## Features
 
