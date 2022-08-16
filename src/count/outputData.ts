@@ -11,12 +11,17 @@ export class Data{
 
 
     /**
-     * コンストラクタ
+     * コンストラクタ: 引数のExtensionContextをこのクラスに代入する
+     * @param {vscode.ExtensionContext} context 
      */
     constructor(context: vscode.ExtensionContext){
 		Data._context = context; // 引数のExtensionContextを格納
 	}
 
+    /**
+     * 文字数などのデータをglobalStorageに書き込むメソッド
+     * @param {count.CharCount} contents ファイル名や文字数などが格納されたフィールド
+     */
     public dataOutput(contents:count.CharCount) : void{
         Data._filename = contents.returnFileName(); // まとめてファイル名を受け取る
 
