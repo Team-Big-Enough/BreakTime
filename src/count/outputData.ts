@@ -22,9 +22,10 @@ export class Data{
 
         for(let i = 0; i < Data._filename.length; i++){
             // globalStorageに保存する文字列の作成
-            let output:string = date
+            let output:string = date // 14桁の数字列
                                 + Data._filename[i] // ファイル名
-                                + contents.returnStrNum(Data._filename[i]).toString // 文字数
+                                + "?" // ファイル名と文字数の境目をわかりやすくする
+                                + contents.returnStrNum(Data._filename[i]).toString() // 文字数
                                 + "\n" // 改行
                                 ;
             

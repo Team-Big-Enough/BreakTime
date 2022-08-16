@@ -24,6 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let countEventCont = new count.CountEventController(charCount);
 
 	let testTom = new fileOutput.Data(context);
+	
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -34,8 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 
-		setTimeout(startbreak, INTERVAL, context);
-
+		setTimeout(startbreak, INTERVAL, context, testTom, charCount);
 
 	});
 
@@ -56,10 +56,12 @@ export function deactivate() {}
 /*
 *タイマーをセットする
 */
-function startbreak(context: vscode.ExtensionContext){
+function startbreak(context: vscode.ExtensionContext, output: fileOutput.Data, content: count.CharCount){
 	vscode.window.showInformationMessage('休憩してください！', {
 		modal: true,
 	});
+
+	output.dataOutput(content);
 
 	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibNNjxJIu-0NU_bkVjslf6-CN7u6VGUUQsst4_-_PhGbaASpwuoDsF6fvtliWir7rfrB45XGZHdEbVCAp1utUWG7dhfWDp2-DG_r3-s0agCs5srD2qqRjaQdYXYE-iBd2BGloB_J62bjZYJ0pGdIAQsyMMNTCbJtaqVeUYtwfxB1SmxoNB-qQMQSGp/s1000/11792.gif'};
 
@@ -100,13 +102,13 @@ function startbreak(context: vscode.ExtensionContext){
 
 
 
-	timer(MINITES,SECONDS, context);// 分：秒
+	timer(MINITES,SECONDS, context, output, content);// 分：秒
 }
 
 /*
 *タイマー開始
 */
-function timer(min: number, sec: number, context: vscode.ExtensionContext){
+function timer(min: number, sec: number, context: vscode.ExtensionContext, output: fileOutput.Data, content: count.CharCount){
 
 	if(sec - 1 === -1){
 		min --;
@@ -115,10 +117,10 @@ function timer(min: number, sec: number, context: vscode.ExtensionContext){
 	else{
 		sec --;
 	}
-	console.log(min, sec);
+	//console.log(min, sec);
 	// vscode.window.showInformationMessage("残り"+min+ "分"+sec+"秒です!");
 	vscode.window.setStatusBarMessage("残り"+min+ "分"+sec+"秒です!", min*60000+sec*1000);
-	var id = setTimeout(timer, 1000, min, sec, context);
+	var id = setTimeout(timer, 1000, min, sec, context, output, content);
 	// var id = setInterval(timer, 2000, min, sec);
 
 	// 終了
@@ -127,7 +129,7 @@ function timer(min: number, sec: number, context: vscode.ExtensionContext){
 		vscode.window.showInformationMessage('休憩終了です！', {
 			modal: true,
 		});
-		setTimeout(startbreak, INTERVAL, context);
+		setTimeout(startbreak, INTERVAL, context, output, content);
 	}
 
 }
