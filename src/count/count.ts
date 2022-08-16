@@ -101,7 +101,7 @@ export class CharCount{
 	 * @param {String} name ファイル名
 	 * @returns {number} 文字数
 	 */
-	public returnLineNum(name?: String){
+	public returnLineNum(name?: String):number{
 		let number = 0; // 返り値用
 
 		if(!name){ // 引数の記述がない場合
