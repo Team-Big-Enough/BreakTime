@@ -7,9 +7,9 @@ export class CharCount{
 	private _fileName: String = "none"; // 現在のファイル名
 	private _nowFileNum: number = 0; // 現在操作するファイルの番号
 
-	private _assenblyStrNum: Array<number> = []; // 各ファイルごとの文字数
-	private _assenblyLineNum: Array<number> = []; // 各ファイルごとの行数
-	private _assenblyFileName: Array<String> = []; // 各ファイルの名前
+	private _assemblyStrNum: Array<number> = []; // 各ファイルごとの文字数
+	private _assemblyLineNum: Array<number> = []; // 各ファイルごとの行数
+	private _assemblyFileName: Array<String> = []; // 各ファイルの名前
 
 	/**	public
 		エディタ情報を更新するメソッド
@@ -29,21 +29,21 @@ export class CharCount{
 		this._lineNum = document.lineCount; // 行数を更新
 		this._fileName = document.fileName; // ファイル名を更新
 
-		// assenbly内にdocumentのファイルがあるかどうか
+		// assembly内にdocumentのファイルがあるかどうか
 		if(this.searchFileName(this._fileName)){
-			this._assenblyStrNum[this._nowFileNum] = this._stringNum; // 文字数を更新
-			this._assenblyLineNum[this._nowFileNum] = this._lineNum; // 行数を更新
+			this._assemblyStrNum[this._nowFileNum] = this._stringNum; // 文字数を更新
+			this._assemblyLineNum[this._nowFileNum] = this._lineNum; // 行数を更新
 		}
 		else{
-			this._assenblyStrNum.push(this._stringNum); // 文字数を新たに追加
-			this._assenblyLineNum.push(this._lineNum); // 行数を新たに追加
-			this._assenblyFileName.push(this._fileName); // ファイル名を新たに追加
+			this._assemblyStrNum.push(this._stringNum); // 文字数を新たに追加
+			this._assemblyLineNum.push(this._lineNum); // 行数を新たに追加
+			this._assemblyFileName.push(this._fileName); // ファイル名を新たに追加
 
-			this._nowFileNum = this._assenblyFileName.length - 1; // 現在のファイルを更新
+			this._nowFileNum = this._assemblyFileName.length - 1; // 現在のファイルを更新
 		}
 
-		//console.log(this._fileName + " ..." + "charactors:" + this._stringNum + " lines:" + this._lineNum); // コンソールに現在のファイルの情報を追加
-		console.log("sum..." + " charactors: " + this.returnStrNum() + " lines" + this.returnLineNum());
+		//console.log(this._fileName + " ..." + "characters:" + this._stringNum + " lines:" + this._lineNum); // コンソールに現在のファイルの情報を追加
+		//console.log("sum//" + " characters: " + this.returnStrNum() + " lines" + this.returnLineNum());
 
 	}
 
@@ -78,15 +78,16 @@ export class CharCount{
 			let sum = 0; // 文字数の合計
 
 			// 全ての文字数を求める
-			for(let i = 0; i < this._assenblyFileName.length; i++){
-				sum += this._assenblyStrNum[i]; // i の時のassenblyStrNumの数を足す
+			for(let i = 0; i < this._assemblyFileName.length; i++){
+				sum += this._assemblyStrNum[i]; // i の時のassemblyStrNumの数を足す
 			}
 
 			number = sum; // 返り値用の変数に合計を格納
 		}
 		else{
+			// 引数のファイル名のものが記録されているかどうか
 			if(this.searchFileName(name)){
-				number = this._assenblyStrNum[this._nowFileNum];
+				number = this._assemblyStrNum[this._nowFileNum];
 			}
 			else{
 				number = 0;
@@ -109,15 +110,16 @@ export class CharCount{
 			let sum = 0; // 文字数の合計
 
 			// 全ての文字数を求める
-			for(let i = 0; i < this._assenblyFileName.length; i++){
-				sum += this._assenblyLineNum[i]; // i の時のassenblyStrNumの数を足す
+			for(let i = 0; i < this._assemblyFileName.length; i++){
+				sum += this._assemblyLineNum[i]; // i の時のassemblyStrNumの数を足す
 			}
 
 			number = sum; // 返り値用の変数に合計を格納
 		}
 		else{
+			// 引数のファイル名のものが記録されているかどうか
 			if(this.searchFileName(name)){
-				number = this._assenblyLineNum[this._nowFileNum];
+				number = this._assemblyLineNum[this._nowFileNum];
 			}
 			else{
 				number = 0;
@@ -132,7 +134,7 @@ export class CharCount{
 	 * 返り値 (String[]型)
 	 */
 	public returnFileName(): String[]{
-		return this._assenblyFileName;
+		return this._assemblyFileName;
 	}
 
 	/**	private
@@ -142,9 +144,9 @@ export class CharCount{
 		返り値 (boolean型)
 	**/
 	private searchFileName(name: String): boolean{
-		for(let i = 0; i < this._assenblyFileName.length; i++){
-			// iの時の_assenblyFileNameとnameが一致する時
-			if(name === this._assenblyFileName[i]){
+		for(let i = 0; i < this._assemblyFileName.length; i++){
+			// iの時の_assemblyFileNameとnameが一致する時
+			if(name === this._assemblyFileName[i]){
 				this._nowFileNum = i; // 現在のファイルの場所を格納
 				return true; // trueを返す
 			}
@@ -157,13 +159,13 @@ export class CharCount{
 /**
  * 入力イベントを管理するクラス
  */
-export class CountEventControler{
-	private _charcount: CharCount;
+export class CountEventController{
+	private _charCount: CharCount;
 	private _disposable: vscode.Disposable;
 
-	constructor(charcount: CharCount){
-		this._charcount = charcount; // 引数のものを代入
-		this._charcount.updateCount(); // エディタ情報を更新
+	constructor(charCount: CharCount){
+		this._charCount = charCount; // 引数のものを代入
+		this._charCount.updateCount(); // エディタ情報を更新
 
 		let subscriptions: vscode.Disposable[] = [];
 
@@ -176,7 +178,7 @@ export class CountEventControler{
 	}
 
 	private _onEvent(){
-		this._charcount.updateCount();
+		this._charCount.updateCount();
 	}
 
 	public dispose(){

@@ -5,7 +5,8 @@ import { countReset } from 'console';
 import * as typescript from 'typescript';
 import * as vscode from 'vscode';
 import * as path from 'path';
-import count = require('./input/count'); // count.tsにある文字数カウントクラスなどをインポート
+import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
+import fileOutput = require("./count/outputData");
 
 const MINITES = 0; // m
 const SECONDS = 30; // s
@@ -19,8 +20,10 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "vscode-breaktime" is now active!');
 
-	let charcount = new count.CharCount();
-	let countEventCont = new count.CountEventControler(charcount);
+	let charCount = new count.CharCount();
+	let countEventCont = new count.CountEventController(charCount);
+
+	let testTom = new fileOutput.Data(context);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -32,6 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// Display a message box to the user
 
 		setTimeout(startbreak, INTERVAL, context);
+
 
 	});
 
