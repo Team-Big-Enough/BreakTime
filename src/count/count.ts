@@ -11,12 +11,10 @@ export class CharCount{
 	private _assemblyLineNum: Array<number> = []; // 各ファイルごとの行数
 	private _assemblyFileName: Array<String> = []; // 各ファイルの名前
 
-	/**	public
-		エディタ情報を更新するメソッド
-		引数 なし;
-		返り値 なし
-	 **/
-	public updateCount(){
+	/**
+	 * エディタ情報を更新するメソッド
+	 */
+	public updateCount():void{
 		let editor = vscode.window.activeTextEditor; // 現在開いているエディタ情報を格納
 		if(!editor){ // "editor"がundefinedである場合
 			return;
@@ -47,11 +45,11 @@ export class CharCount{
 
 	}
 
-	/** private
-		引数であるドキュメントの文字数を返すメソッド
-		引数 document (vscode.TextDocument型);
-		返り値 strNum (number型) ... 文字数
-	**/
+	/**
+	 * 引数であるドキュメントの文字数を返すメソッド
+	 * @param {vscode.TextDocument} document 
+	 * @returns {number}  文字数
+	 */
 	private getNumChar(document: vscode.TextDocument): number {
 		let strDoc = document.getText(); // ドキュメントの文字をString型で所得
 		let strNum : number = 0; // 文字数を格納するnumber型の変数
@@ -65,12 +63,12 @@ export class CharCount{
 		return strNum;
 	}
 
-	/** public
-		引数にファイル名が格納されていれば，そのファイルの文字数を，
-		格納されて居なければ全てのファイルの合計文字数を返す
-		引数 name(String型)...ファイル名;
-		返り値 number(number型)...文字数
-	**/
+	/**
+	 * 引数にファイル名が格納されていれば，そのファイルの文字数を，
+	 * 格納されて居なければ全てのファイルの合計文字数を返す
+	 * @param {String} name ファイル名
+	 * @returns {number} 文字数
+	 */
 	public returnStrNum(name?: String): number{
 		let number = 0; // 返り値用
 
@@ -87,7 +85,7 @@ export class CharCount{
 		else{
 			// 引数のファイル名のものが記録されているかどうか
 			if(this.searchFileName(name)){
-				number = this._assemblyStrNum[this._nowFileNum];
+				number = this._assemblyStrNum[this._nowFileNum]; // あればnumberにその文字数を格納
 			}
 			else{
 				number = 0;
@@ -97,12 +95,12 @@ export class CharCount{
 		return number;
 	}
 
-	/** public
-	 *	引数にファイル名が格納されていれば，そのファイルの行数を，
-	 *	格納されて居なければ全てのファイルの合計行数を返す.
-	 *	引数 name(String型)...ファイル名;
-	 *	返り値 number(number型)...文字数
-	**/
+	/**
+	 * 引数にファイル名が格納されていれば，そのファイルの行数を，
+	 * 格納されて居なければ全てのファイルの合計行数を返す.
+	 * @param {String} name ファイル名
+	 * @returns {number} 文字数
+	 */
 	public returnLineNum(name?: String){
 		let number = 0; // 返り値用
 
@@ -119,7 +117,7 @@ export class CharCount{
 		else{
 			// 引数のファイル名のものが記録されているかどうか
 			if(this.searchFileName(name)){
-				number = this._assemblyLineNum[this._nowFileNum];
+				number = this._assemblyLineNum[this._nowFileNum]; //あればnumberにその行数を格納
 			}
 			else{
 				number = 0;
@@ -131,18 +129,18 @@ export class CharCount{
 
 	/**
 	 * ファイル名をまとめて返すメソッド
-	 * 返り値 (String[]型)
+	 * @returns {String[]}ファイル名の集合
 	 */
 	public returnFileName(): String[]{
 		return this._assemblyFileName;
 	}
 
-	/**	private
-		引数のファイル名と同じファイル名が格納されているかを確認し格納されていればtrue
-		格納されていなければfalseを返すメソッド
-		引数 name(String型) ... ファイル名;
-		返り値 (boolean型)
-	**/
+	/**
+	 * 引数のファイル名と同じファイル名が格納されているかを確認し格納されていればtrue
+	 * 格納されていなければfalseを返すメソッド
+	 * @param {String} name ファイル名
+	 * @returns {boolean} nameが格納されているかどうか
+	 */
 	private searchFileName(name: String): boolean{
 		for(let i = 0; i < this._assemblyFileName.length; i++){
 			// iの時の_assemblyFileNameとnameが一致する時
@@ -163,6 +161,10 @@ export class CountEventController{
 	private _charCount: CharCount;
 	private _disposable: vscode.Disposable;
 
+	/**
+	 * コンストラクタ:charCountを動作させる
+	 * @param {CharCount} charCount 動作させるもの
+	 */
 	constructor(charCount: CharCount){
 		this._charCount = charCount; // 引数のものを代入
 		this._charCount.updateCount(); // エディタ情報を更新
@@ -177,10 +179,16 @@ export class CountEventController{
 		this._disposable = vscode.Disposable.from(...subscriptions);
 	}
 
+	/**
+	 * 動作させたいものをまとめたメソッド
+	 */
 	private _onEvent(){
 		this._charCount.updateCount();
 	}
 
+	/**
+	 * disposeのメソッド
+	 */
 	public dispose(){
 		this._disposable.dispose();
 	}
