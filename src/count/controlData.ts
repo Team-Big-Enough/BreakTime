@@ -18,6 +18,7 @@ export class Data{
     private _fileName: Array<string> = []; // ファイル名
     private _strNum: Array<number> = []; // 文字数
     private _question: Array<number> = []; // "?"がある位置
+    private _backslashN: Array<number> = []; // 改行がある位置("\n"がある位置)
 
     /**
      * コンストラクタ: 引数のExtensionContextをこのクラスに代入する
@@ -69,11 +70,40 @@ export class Data{
         */
     }
 
-    private _searchQuestion(data: string){
+    /**
+     * "?"の位置をすべて検索するメソッド
+     * @param {string} data 探したいデータ
+     */
+    private _searchQuestion(data: string): void{
         for(let beforeQ = 0, i = 0; beforeQ !== -1; i++){
-            beforeQ = data.indexOf(data, beforeQ);
+            beforeQ = data.indexOf("?", beforeQ);
+
+            if(beforeQ !== -1){
+                this._question[i] = beforeQ; // "?"がある場所を格納
+            }
+        }
+    }
+
+    /**
+     * "\n"をすべて検索するメソッド
+     * @param {string} data 探したいデータ
+     */
+    private _searchBackslashN(data: string): void{
+        for(let beforeN = 0, i = 0; beforeN !== -1; i++){
+            beforeN = data.indexOf("\n", beforeN);
+
+            if(beforeN !== -1){
+                this._backslashN[i] = beforeN; // "?"がある場所を格納
+            }
         }
     }
     
+    private _pickUpTimeStampData(data: string): void{
+        this._timestamp[0] = parseInt(data.slice(0, 13)); // 最初の13文字分を格納
+
+        for(let i = 0; this._backslashN.includes(i); i++){
+            this._timestamp[i + 1] = parseInt(data.slice(this._backslashN[i] + 2, this._backslashN[i] + 2 + 13)); // "\n"の後の13文字分をタイムスタンプのものとして格納する
+        }
+    }
 }
 
