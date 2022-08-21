@@ -4,12 +4,12 @@ import * as vscode from 'vscode';
 export class CharCount{
 	private _stringNum: number = 0; // 現在の文字数
 	private _lineNum: number = 0; // 現在の行数
-	private _fileName: String = "none"; // 現在のファイル名
+	private _fileName: string = "none"; // 現在のファイル名
 	private _nowFileNum: number = 0; // 現在操作するファイルの番号
 
 	private _assemblyStrNum: Array<number> = []; // 各ファイルごとの文字数
 	private _assemblyLineNum: Array<number> = []; // 各ファイルごとの行数
-	private _assemblyFileName: Array<String> = []; // 各ファイルの名前
+	private _assemblyFileName: Array<string> = []; // 各ファイルの名前
 
 	/**
 	 * エディタ情報を更新するメソッド
@@ -66,10 +66,10 @@ export class CharCount{
 	/**
 	 * 引数にファイル名が格納されていれば，そのファイルの文字数を，
 	 * 格納されて居なければ全てのファイルの合計文字数を返す
-	 * @param {String} name ファイル名
+	 * @param {string} name ファイル名
 	 * @returns {number} 文字数
 	 */
-	public returnStrNum(name?: String): number{
+	public returnStrNum(name?: string): number{
 		let number = 0; // 返り値用
 
 		if(!name){ // 引数の記述がない場合
@@ -98,10 +98,10 @@ export class CharCount{
 	/**
 	 * 引数にファイル名が格納されていれば，そのファイルの行数を，
 	 * 格納されて居なければ全てのファイルの合計行数を返す.
-	 * @param {String} name ファイル名
+	 * @param {string} name ファイル名
 	 * @returns {number} 文字数
 	 */
-	public returnLineNum(name?: String):number{
+	public returnLineNum(name?: string):number{
 		let number = 0; // 返り値用
 
 		if(!name){ // 引数の記述がない場合
@@ -129,9 +129,9 @@ export class CharCount{
 
 	/**
 	 * ファイル名をまとめて返すメソッド
-	 * @returns {String[]}ファイル名の集合
+	 * @returns {string[]}ファイル名の集合
 	 */
-	public returnFileName(): String[]{
+	public returnFileName(): string[]{
 		return this._assemblyFileName;
 	}
 
@@ -141,7 +141,7 @@ export class CharCount{
 	 * @param {String} name ファイル名
 	 * @returns {boolean} nameが格納されているかどうか
 	 */
-	private searchFileName(name: String): boolean{
+	private searchFileName(name: string): boolean{
 		for(let i = 0; i < this._assemblyFileName.length; i++){
 			// iの時の_assemblyFileNameとnameが一致する時
 			if(name === this._assemblyFileName[i]){
