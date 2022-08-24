@@ -19,6 +19,8 @@ export class Data{
     private _strNum: Array<number> = []; // 文字数
     private _question: Array<number> = []; // "?"がある位置
     private _backslashN: Array<number> = []; // 改行がある位置("\n"がある位置)
+    private _arrayBeforeConvert: Array<string> = [];
+    private _mixtureData: Array<string> = [];
 
     /**
      * コンストラクタ: 引数のExtensionContextをこのクラスに代入する
@@ -40,70 +42,64 @@ export class Data{
 
         for(let i = 0; i < Data._filename.length; i++){
             // globalStorageに保存する文字列の作成
+            // splitメソッド
             let input:string = timestamp.toString() // タイムスタンプ(ミリ秒, 13桁)
+                                + "?" // 区切り文字
                                 + Data._filename[i] // ファイル名
                                 + "?" // ファイル名と文字数の境目をわかりやすくする
                                 + contents.returnStrNum(Data._filename[i]).toString() // 文字数
+                                + "?" // 区切り文字
                                 + "\n" // 改行
+                                + "?"
                                 ;
             
-            fs.writeFileSync(Data._context.globalStorageUri.fsPath, input); // ファイルを上書き(リセットしてから書き込み)
+            if(i === 0){
+                fs.writeFileSync(Data._context.globalStorageUri.fsPath, input); // ファイルを上書き(リセットしてから書き込み)
+            }
+            else{
+                fs.appendFileSync(Data._context.globalStorageUri.fsPath, input); // 追加書き込み
+            }
+            
 
             //fs.appendFileSync(Data._context.globalStorageUri.fsPath, output); // ファイルに追加書き込みする
             console.log(input);
-        }
+        } // 000000000?undifined-1?234
+
     }
     
+    /**
+     * データを取り出すメソッド
+     */
     public dataOutput(){
         Data._buffer = fs.readFileSync(Data._context.globalStorageUri.fsPath); // globalStorage内のデータすべてを取り出す
         //console.log(Buffer.from(Data._buffer).toString());
+
+        // 読み込んだデータを扱いやすい型で分けて格納する
+        this._dataConvert();
+
+        for(let i = 0; i < this._fileName.length; i++){
+            console.log("file name: " + this._fileName[i] + " num of string:" + this._strNum[i] + " stamp:" + this._timestamp[i]);
+        }
     }
 
+    /**
+     * 読み込んだデータを変換するメソッド
+     */
     private _dataConvert():void{
         this._dataBeforeConvert = Buffer.from(Data._buffer).toString(); // String型に変換したバッファのデータを格納
 
+        this._mixtureData = this._dataBeforeConvert.split("?");
+        //console.log("dou :" + this._mixtureData[3] + "fow:" + this._mixtureData[4]);
+
+        for(let i = 0; 4 * i < this._mixtureData.length - 1; i++){
+            this._timestamp[i] = parseInt(this._mixtureData[4 * i]);
+            this._fileName[i] = this._mixtureData[4 * i + 1];
+            this._strNum[i] = parseInt(this._mixtureData[4 * i + 2]);
+
+            console.log("time stamp:" + this._timestamp[i] + " file:" + this._fileName[i] + " number string:" + this._strNum[i]);
+        }
         
-        /*
-        for(let i = 0; this._date[i-1] != null; i++){
-            this._date[i] = parseInt(this._dataBeforeConvert.slice(0, 12)); // 先頭13文字分のデータを_dateに格納(for用に改良する必要性あり)
-        }
-        */
     }
 
-    /**
-     * "?"の位置をすべて検索するメソッド
-     * @param {string} data 探したいデータ
-     */
-    private _searchQuestion(data: string): void{
-        for(let beforeQ = 0, i = 0; beforeQ !== -1; i++){
-            beforeQ = data.indexOf("?", beforeQ);
-
-            if(beforeQ !== -1){
-                this._question[i] = beforeQ; // "?"がある場所を格納
-            }
-        }
-    }
-
-    /**
-     * "\n"をすべて検索するメソッド
-     * @param {string} data 探したいデータ
-     */
-    private _searchBackslashN(data: string): void{
-        for(let beforeN = 0, i = 0; beforeN !== -1; i++){
-            beforeN = data.indexOf("\n", beforeN);
-
-            if(beforeN !== -1){
-                this._backslashN[i] = beforeN; // "?"がある場所を格納
-            }
-        }
-    }
-    
-    private _pickUpTimeStampData(data: string): void{
-        this._timestamp[0] = parseInt(data.slice(0, 13)); // 最初の13文字分を格納
-
-        for(let i = 0; this._backslashN.includes(i); i++){
-            this._timestamp[i + 1] = parseInt(data.slice(this._backslashN[i] + 2, this._backslashN[i] + 2 + 13)); // "\n"の後の13文字分をタイムスタンプのものとして格納する
-        }
-    }
 }
 
