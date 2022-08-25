@@ -12,6 +12,7 @@ const MINITES = 0; // m
 const SECONDS = 30; // s
 const INTERVAL = 30000; // ms : 30秒
 
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -23,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let charCount = new count.CharCount();
 	let countEventCont = new count.CountEventController(charCount);
 
-	let testTom = new globalData.Data(context);
+	let data = new globalData.Data(context);
 	
 
 	// The command has been defined in the package.json file
@@ -35,9 +36,11 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 
-		setTimeout(startbreak, INTERVAL, context, testTom, charCount);
+		setTimeout(startbreak, INTERVAL, context, data, charCount);
+
 
 	});
+
 
 	context.subscriptions.push(disposable);
 
@@ -49,7 +52,9 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+
+}
 
 
 
@@ -62,6 +67,7 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data, co
 	});
 
 	input.dataInput(content); // データをglobalStorageに格納する
+	
 
 	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibNNjxJIu-0NU_bkVjslf6-CN7u6VGUUQsst4_-_PhGbaASpwuoDsF6fvtliWir7rfrB45XGZHdEbVCAp1utUWG7dhfWDp2-DG_r3-s0agCs5srD2qqRjaQdYXYE-iBd2BGloB_J62bjZYJ0pGdIAQsyMMNTCbJtaqVeUYtwfxB1SmxoNB-qQMQSGp/s1000/11792.gif'};
 
