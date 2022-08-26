@@ -7,7 +7,7 @@ const chart = new window.Chart(ctx, {
         labels: ['a', 'b', 'c', 'd', 'e', 'f'],
         datasets: [{
             label: '# of lines',
-            data: [12, 19, 3, 5, 2, 3],
+            data: sabun,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -40,7 +40,7 @@ const chart = new window.Chart(ctx, {
                 display: true,
                 labelString: '縦',
                 ticks: {
-                    beginAtZero: true   
+                    beginAtZero: true
                 }
             }]
         }
@@ -62,8 +62,8 @@ const chart = new window.Chart(ctx, {
     // 散布図
     // type: 'scatter',
     // datasets: [{
-        
+
     // }]
 
-    
+
 });
