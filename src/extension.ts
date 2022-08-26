@@ -1,8 +1,5 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-
-import { countReset } from 'console';
-import { EndOfLineState } from 'typescript';
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { CharCount, CountEventControler } from './count';
@@ -153,11 +150,7 @@ function getWebviewContents(graphSrc: vscode.Uri, sabun: Array<number>){
 		<title>title</title>
 	</head>
 	<body>
-		<h1>title</h1>
-
-
-
-
+		<h1>お疲れ様です！</h1>
 		<div>
 			<canvas id="graph" width="100%"></canvas>
 		</div>
