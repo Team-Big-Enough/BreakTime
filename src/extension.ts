@@ -64,6 +64,9 @@ function startbreak(context: vscode.ExtensionContext){
 	let strNum = charcount.returnStrNum();
 	console.log(strNum-tmp);
 	// getData(strNum-tmp);
+	if(sabun.length > 5) {
+		sabun.shift();
+	}
 	sabun.push(strNum-tmp);
 	console.log(sabun);
 
@@ -83,10 +86,10 @@ function startbreak(context: vscode.ExtensionContext){
 		</body>
 		</html>`;
 	}
-	const kyuukeiCandidates = ['休憩'] as const;
-	const kyuukeiResult = kyuukeiCandidates[Math.floor(Math.random() * kyuukeiCandidates.length)];
-	const panel = vscode.window.createWebviewPanel('breaktime',`お疲れ様です。${kyuukeiResult}のお時間です！`,vscode.ViewColumn.One,{});
-	panel.webview.html = getWebviewContent(kyuukeiResult);
+	// const kyuukeiCandidates = ['休憩'] as const;
+	// const kyuukeiResult = kyuukeiCandidates[Math.floor(Math.random() * kyuukeiCandidates.length)];
+	// const panel = vscode.window.createWebviewPanel('breaktime',`お疲れ様です。${kyuukeiResult}のお時間です！`,vscode.ViewColumn.One,{});
+	// panel.webview.html = getWebviewContent(kyuukeiResult);
 
 	// webviewはローカルリソースに直接アクセスできないらしい
 	// 読み込みたいときはWebview.asWebviewUri関数を使って、読み込める形に変換しないといけない
@@ -152,9 +155,8 @@ function getWebviewContents(graphSrc: vscode.Uri, sabun: Array<number>){
 	<body>
 		<h1>title</h1>
 
-		<div class=""><input type="radio" name="analysis" value="bar" checked>縦棒グラフ</div>
-		<div class=""><input type="radio" name="analysis" value="Line">折れ線グラフ</div>
-		<div class=""><input type="radio" name="analysis" value="3">散布図</div>
+
+
 
 		<div>
 			<canvas id="graph" width="100%"></canvas>
