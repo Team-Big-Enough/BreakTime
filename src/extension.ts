@@ -1,5 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+<<<<<<< HEAD
 
 import { countReset } from 'console';
 import * as typescript from 'typescript';
@@ -7,10 +8,17 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
 import globalData = require("./count/controlData");
+=======
+import * as vscode from 'vscode';
+import * as path from 'path';
+import { CharCount, CountEventControler } from './count';
+>>>>>>> createGraph
 
 const MINITES = 0; // m
-const SECONDS = 30; // s
-const INTERVAL = 30000; // ms : 30秒
+const SECONDS = 10; // s
+const INTERVAL = 5000; // ms : 30秒
+let tmp = 0;
+let sabun = new Array();
 
 
 // this method is called when your extension is activated
@@ -21,11 +29,16 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "vscode-breaktime" is now active!');
 
+<<<<<<< HEAD
 	let charCount = new count.CharCount();
 	let countEventCont = new count.CountEventController(charCount);
 
 	let data = new globalData.Data(context);
 	
+=======
+	// let charcount = new CharCount();
+	// let countEventCont = new CountEventControler(charcount);
+>>>>>>> createGraph
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -47,16 +60,20 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// リソース解放
 	//context.subscriptions.push(disposable);
-	context.subscriptions.push(countEventCont);
+	// context.subscriptions.push(countEventCont);
 
 }
 
 // this method is called when your extension is deactivated
+<<<<<<< HEAD
 export function deactivate() {
 
 }
 
 
+=======
+export function deactivate() {}
+>>>>>>> createGraph
 
 /*
 *タイマーをセットする
@@ -66,10 +83,27 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data, co
 		modal: true,
 	});
 
+<<<<<<< HEAD
 	input.dataInput(content); // データをglobalStorageに格納する
 	
 	console.log(input.returnNumOfString());
 	
+=======
+
+	// 前回休憩時の文字数と今回の休憩までの文字数の差分を取得
+	let charcount = new CharCount();
+	let countEventCont = new CountEventControler(charcount);
+	let strNum = charcount.returnStrNum();
+	console.log(strNum-tmp);
+	// getData(strNum-tmp);
+	if(sabun.length > 5) {
+		sabun.shift();
+	}
+	sabun.push(strNum-tmp);
+	console.log(sabun);
+
+	tmp = strNum;
+>>>>>>> createGraph
 
 	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibNNjxJIu-0NU_bkVjslf6-CN7u6VGUUQsst4_-_PhGbaASpwuoDsF6fvtliWir7rfrB45XGZHdEbVCAp1utUWG7dhfWDp2-DG_r3-s0agCs5srD2qqRjaQdYXYE-iBd2BGloB_J62bjZYJ0pGdIAQsyMMNTCbJtaqVeUYtwfxB1SmxoNB-qQMQSGp/s1000/11792.gif'};
 
@@ -85,16 +119,16 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data, co
 		</body>
 		</html>`;
 	}
-	const kyuukeiCandidates = ['休憩'] as const;
-	const kyuukeiResult = kyuukeiCandidates[Math.floor(Math.random() * kyuukeiCandidates.length)];
-	const panel = vscode.window.createWebviewPanel('breaktime',`お疲れ様です。${kyuukeiResult}のお時間です！`,vscode.ViewColumn.One,{});
-	panel.webview.html = getWebviewContent(kyuukeiResult);
+	// const kyuukeiCandidates = ['休憩'] as const;
+	// const kyuukeiResult = kyuukeiCandidates[Math.floor(Math.random() * kyuukeiCandidates.length)];
+	// const panel = vscode.window.createWebviewPanel('breaktime',`お疲れ様です。${kyuukeiResult}のお時間です！`,vscode.ViewColumn.One,{});
+	// panel.webview.html = getWebviewContent(kyuukeiResult);
 
 	// webviewはローカルリソースに直接アクセスできないらしい
 	// 読み込みたいときはWebview.asWebviewUri関数を使って、読み込める形に変換しないといけない
 	// https://code.visualstudio.com/api/extension-guides/webview#loading-local-content
 	// Create and show a new webview
-	const panell = vscode.window.createWebviewPanel(
+	const graphPanell = vscode.window.createWebviewPanel(
 		'Graph', // Identifies the type of the webview. Used internally
 		'test area', // Title of the panel displayed to the user
 		vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
@@ -104,19 +138,26 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data, co
 	const graphPath = vscode.Uri.file(
 		path.join(context.extensionPath, 'src', 'graph.js')
 	);
-	const graphSrc = panell.webview.asWebviewUri(graphPath);
-
-	panell.webview.html = getWebviewContents(graphSrc);
-
+	const graphSrc = graphPanell.webview.asWebviewUri(graphPath);
+	graphPanell.webview.html = getWebviewContents(graphSrc, sabun);
 
 
+
+<<<<<<< HEAD
 	timer(MINITES,SECONDS, context, input, content);// 分：秒
+=======
+	timer(MINITES,SECONDS, context, graphPanell);// 分：秒
+>>>>>>> createGraph
 }
 
 /*
 *タイマー開始
 */
+<<<<<<< HEAD
 function timer(min: number, sec: number, context: vscode.ExtensionContext, input: globalData.Data, content: count.CharCount){
+=======
+function timer(min: number, sec: number, context: vscode.ExtensionContext, panel: any){
+>>>>>>> createGraph
 
 	if(sec - 1 === -1){
 		min --;
@@ -125,14 +166,22 @@ function timer(min: number, sec: number, context: vscode.ExtensionContext, input
 	else{
 		sec --;
 	}
+<<<<<<< HEAD
 	//console.log(min, sec);
 	// vscode.window.showInformationMessage("残り"+min+ "分"+sec+"秒です!");
 	vscode.window.setStatusBarMessage("残り"+min+ "分"+sec+"秒です!", min*60000+sec*1000);
 	var id = setTimeout(timer, 1000, min, sec, context, input, content);
+=======
+	// console.log(min, sec);
+	// vscode.window.showInformationMessage("残り"+min+ "分"+sec+"秒です!");
+	vscode.window.setStatusBarMessage("残り"+min+ "分"+sec+"秒です!", min*60000+sec*1000);
+	var id = setTimeout(timer, 1000, min, sec, context, panel);
+>>>>>>> createGraph
 	// var id = setInterval(timer, 2000, min, sec);
 
 	// 終了
 	if(min < 0 ){
+		panel.dispose();
 		clearTimeout(id);
 		vscode.window.showInformationMessage('休憩終了です！', {
 			modal: true,
@@ -142,7 +191,7 @@ function timer(min: number, sec: number, context: vscode.ExtensionContext, input
 
 }
 
-function getWebviewContents(graphSrc: vscode.Uri){
+function getWebviewContents(graphSrc: vscode.Uri, sabun: Array<number>){
 	return `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -152,16 +201,13 @@ function getWebviewContents(graphSrc: vscode.Uri){
 		<title>title</title>
 	</head>
 	<body>
-		<h1>title</h1>
-
-		<div class=""><input type="radio" name="analysis" value="bar" checked>縦棒グラフ</div>
-		<div class=""><input type="radio" name="analysis" value="Line">折れ線グラフ</div>
-		<div class=""><input type="radio" name="analysis" value="3">散布図</div>
-
+		<h1>お疲れ様です！</h1>
 		<div>
 			<canvas id="graph" width="100%"></canvas>
 		</div>
-
+		<script>
+		var sabun = `+  JSON.stringify(sabun) +`;
+		</script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
 		<script src=` + graphSrc + `></script>
 	</body>
