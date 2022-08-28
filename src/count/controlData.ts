@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 import count = require('./count'); // count.tsにある文字数カウントクラスなどをインポート
-const date = new Date().toLocaleString('sv').replace(/\D/g, ''); // スウェーデン語のフォーマットYYYY-MM-DD HH:MM:SSをreplaceにてYYYYMMDDHHMMSSに置き換え
+//const date = new Date().toLocaleString('sv').replace(/\D/g, ''); // スウェーデン語のフォーマットYYYY-MM-DD HH:MM:SSをreplaceにてYYYYMMDDHHMMSSに置き換え
 
 /**
  * 所得したデータを扱うクラス
@@ -39,7 +39,8 @@ export class Data{
 
         let joy = true; // 書き込み用のもの
 
-        this.dataOutput();
+        fs.appendFileSync(Data._context.globalStorageUri.fsPath, "");
+        
 
         for(let i= 0; i < Data._outputFileName.length && mode === 0; i++){
             // globalStorageに保存する文字列の作成
@@ -98,7 +99,7 @@ export class Data{
             console.log(input);
         } // 000000000?undefined-1?234?\n?
 
-        
+        this.dataOutput();
     }
     
     /**
@@ -112,7 +113,7 @@ export class Data{
         this._dataConvert();
 
         for(let i = 0; i < Data._outputFileName.length; i++){
-            //console.log("file name: " + Data._outputFileName[i] + " num of string:" + Data._strNum[i] + " stamp:" + Data._timestamp[i]);
+            console.log("file name: " + Data._outputFileName[i] + " num of string:" + Data._strNum[i] + " stamp:" + Data._timestamp[i]);
         }
     }
 
@@ -152,7 +153,7 @@ export class Data{
             judgement = false;
         }
 
-        console.log(timeStamp + " judge:" + judgement);
+        //console.log(timeStamp + " judge:" + judgement);
         
         return judgement;
     }
