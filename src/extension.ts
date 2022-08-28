@@ -12,8 +12,8 @@ import globalData = require("./count/controlData");
 const MINITES = 0; // m
 const SECONDS = 10; // s
 const INTERVAL = 15000; // ms : 30秒
-let tmp = 0;
-let sabun = new Array();
+let sumOfStr = 0;
+let diffOfStr = new Array();
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -59,13 +59,13 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data){
 	// 前回休憩時の文字数と今回の休憩までの文字数の差分を取得
 	let strNum = input.returnNumOfString().slice(-1)[0];
 	console.log("合計文字:", strNum);
-	if(sabun.length > 5) {
-		sabun.shift();
+	if(diffOfStr.length > 5) {
+		diffOfStr.shift();
 	}
-	sabun.push(strNum-tmp);
-	console.log("今回書いた文字量:", sabun);
+	diffOfStr.push(strNum-sumOfStr);
+	console.log("今回書いた文字量:", diffOfStr);
 
-	tmp = strNum;
+	sumOfStr = strNum;
 
 	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibNNjxJIu-0NU_bkVjslf6-CN7u6VGUUQsst4_-_PhGbaASpwuoDsF6fvtliWir7rfrB45XGZHdEbVCAp1utUWG7dhfWDp2-DG_r3-s0agCs5srD2qqRjaQdYXYE-iBd2BGloB_J62bjZYJ0pGdIAQsyMMNTCbJtaqVeUYtwfxB1SmxoNB-qQMQSGp/s1000/11792.gif'};
 
@@ -101,7 +101,7 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data){
 		path.join(context.extensionPath, 'src', 'graph.js')
 	);
 	const graphSrc = graphPanell.webview.asWebviewUri(graphPath);
-	graphPanell.webview.html = getWebviewContents(graphSrc, sabun);
+	graphPanell.webview.html = getWebviewContents(graphSrc, diffOfStr);
 	timer(MINITES,SECONDS, context, graphPanell, input);// 分：秒
 }
 
@@ -134,7 +134,7 @@ function timer(min: number, sec: number, context: vscode.ExtensionContext, panel
 	}
 }
 
-function getWebviewContents(graphSrc: vscode.Uri, sabun: Array<number>){
+function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>){
 	return `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -149,7 +149,7 @@ function getWebviewContents(graphSrc: vscode.Uri, sabun: Array<number>){
 			<canvas id="graph" width="100%"></canvas>
 		</div>
 		<script>
-		var sabun = `+  JSON.stringify(sabun) +`;
+		var diffOfStr = `+  JSON.stringify(diffOfStr) +`;
 		</script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
 		<script src=` + graphSrc + `></script>
