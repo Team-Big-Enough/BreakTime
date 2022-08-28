@@ -1,6 +1,5 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-<<<<<<< HEAD
 
 import { countReset } from 'console';
 import * as typescript from 'typescript';
@@ -8,18 +7,13 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
 import globalData = require("./count/controlData");
-=======
-import * as vscode from 'vscode';
-import * as path from 'path';
-import { CharCount, CountEventControler } from './count';
->>>>>>> createGraph
+
 
 const MINITES = 0; // m
 const SECONDS = 10; // s
-const INTERVAL = 5000; // ms : 30秒
+const INTERVAL = 15000; // ms : 30秒
 let tmp = 0;
 let sabun = new Array();
-
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -28,82 +22,50 @@ export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "vscode-breaktime" is now active!');
-
-<<<<<<< HEAD
-	let charCount = new count.CharCount();
-	let countEventCont = new count.CountEventController(charCount);
-
 	let data = new globalData.Data(context);
-	
-=======
-	// let charcount = new CharCount();
-	// let countEventCont = new CountEventControler(charcount);
->>>>>>> createGraph
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
 	let disposable = vscode.commands.registerCommand('vscode-breaktime.helloWorld', () => {
-
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
-
-		setTimeout(startbreak, INTERVAL, context, data, charCount);
-
-
+		setTimeout(startbreak, INTERVAL, context, data);
 	});
 
-
 	context.subscriptions.push(disposable);
-
-
 	// リソース解放
 	//context.subscriptions.push(disposable);
 	// context.subscriptions.push(countEventCont);
-
 }
 
 // this method is called when your extension is deactivated
-<<<<<<< HEAD
-export function deactivate() {
-
-}
-
-
-=======
 export function deactivate() {}
->>>>>>> createGraph
 
 /*
 *タイマーをセットする
 */
-function startbreak(context: vscode.ExtensionContext, input: globalData.Data, content: count.CharCount){
+function startbreak(context: vscode.ExtensionContext, input: globalData.Data){
 	vscode.window.showInformationMessage('休憩してください！', {
 		modal: true,
 	});
 
-<<<<<<< HEAD
-	input.dataInput(content); // データをglobalStorageに格納する
-	
-	console.log(input.returnNumOfString());
-	
-=======
+	let charcount = new count.CharCount();
+	let countEventCont = new count.CountEventController(charcount);
+
+	input.dataInput(charcount); // データをglobalStorageに格納する
 
 	// 前回休憩時の文字数と今回の休憩までの文字数の差分を取得
-	let charcount = new CharCount();
-	let countEventCont = new CountEventControler(charcount);
-	let strNum = charcount.returnStrNum();
-	console.log(strNum-tmp);
-	// getData(strNum-tmp);
+	let strNum = input.returnNumOfString().slice(-1)[0];
+	console.log("合計文字:", strNum);
 	if(sabun.length > 5) {
 		sabun.shift();
 	}
 	sabun.push(strNum-tmp);
-	console.log(sabun);
+	console.log("今回書いた文字量:", sabun);
 
 	tmp = strNum;
->>>>>>> createGraph
 
 	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibNNjxJIu-0NU_bkVjslf6-CN7u6VGUUQsst4_-_PhGbaASpwuoDsF6fvtliWir7rfrB45XGZHdEbVCAp1utUWG7dhfWDp2-DG_r3-s0agCs5srD2qqRjaQdYXYE-iBd2BGloB_J62bjZYJ0pGdIAQsyMMNTCbJtaqVeUYtwfxB1SmxoNB-qQMQSGp/s1000/11792.gif'};
 
@@ -140,24 +102,13 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data, co
 	);
 	const graphSrc = graphPanell.webview.asWebviewUri(graphPath);
 	graphPanell.webview.html = getWebviewContents(graphSrc, sabun);
-
-
-
-<<<<<<< HEAD
-	timer(MINITES,SECONDS, context, input, content);// 分：秒
-=======
-	timer(MINITES,SECONDS, context, graphPanell);// 分：秒
->>>>>>> createGraph
+	timer(MINITES,SECONDS, context, graphPanell, input);// 分：秒
 }
 
 /*
 *タイマー開始
 */
-<<<<<<< HEAD
-function timer(min: number, sec: number, context: vscode.ExtensionContext, input: globalData.Data, content: count.CharCount){
-=======
-function timer(min: number, sec: number, context: vscode.ExtensionContext, panel: any){
->>>>>>> createGraph
+function timer(min: number, sec: number, context: vscode.ExtensionContext, panel: any, input: globalData.Data){
 
 	if(sec - 1 === -1){
 		min --;
@@ -166,17 +117,10 @@ function timer(min: number, sec: number, context: vscode.ExtensionContext, panel
 	else{
 		sec --;
 	}
-<<<<<<< HEAD
-	//console.log(min, sec);
-	// vscode.window.showInformationMessage("残り"+min+ "分"+sec+"秒です!");
-	vscode.window.setStatusBarMessage("残り"+min+ "分"+sec+"秒です!", min*60000+sec*1000);
-	var id = setTimeout(timer, 1000, min, sec, context, input, content);
-=======
 	// console.log(min, sec);
 	// vscode.window.showInformationMessage("残り"+min+ "分"+sec+"秒です!");
 	vscode.window.setStatusBarMessage("残り"+min+ "分"+sec+"秒です!", min*60000+sec*1000);
-	var id = setTimeout(timer, 1000, min, sec, context, panel);
->>>>>>> createGraph
+	var id = setTimeout(timer, 1000, min, sec, context, panel, input);
 	// var id = setInterval(timer, 2000, min, sec);
 
 	// 終了
@@ -186,9 +130,8 @@ function timer(min: number, sec: number, context: vscode.ExtensionContext, panel
 		vscode.window.showInformationMessage('休憩終了です！', {
 			modal: true,
 		});
-		setTimeout(startbreak, INTERVAL, context, input, content);
+		setTimeout(startbreak, INTERVAL, context,input);
 	}
-
 }
 
 function getWebviewContents(graphSrc: vscode.Uri, sabun: Array<number>){
