@@ -3,20 +3,28 @@ import * as vscode from 'vscode';
 import count = require('./count'); // count.tsにある文字数カウントクラスなどをインポート
 //const date = new Date().toLocaleString('sv').replace(/\D/g, ''); // スウェーデン語のフォーマットYYYY-MM-DD HH:MM:SSをreplaceにてYYYYMMDDHHMMSSに置き換え
 
+export class DataEachDay{
+    public timeStamp: Array<number> = []; // タイムスタンプ
+    public filename: Array<string> = []; // ファイル名(ファイルの絶対パス)
+    public numOfStr: Array<number> = []; // 文字数
+}
+
 /**
  * 所得したデータを扱うクラス
  */
 export class Data{
 
-    private static _context : vscode.ExtensionContext;
+    private static _context : vscode.ExtensionContext; //
     private static _inputFileName : string[]; // globalStorageへファイル名の書き込みをするときに必要なファイル名をまとめたフィールド
     private static _buffer:Buffer; // globalStorage から取り出したデータをまとめて一時的に格納するフィールド
-    private static _timestamp: Array<number> = []; // タイムスタンプ
-    private static _outputFileName: Array<string> = []; // ファイル名
-    private static _strNum: Array<number> = []; // 文字数
+    private static _timestamp: Array<number> = []; // 出力用の変換後のタイムスタンプ
+    private static _outputFileName: Array<string> = []; // 出力用の変換後のファイル名
+    private static _strNum: Array<number> = []; // 出力用の変換後の文字数
 
     private _dataBeforeConvert: string = "none"; // 変換前の取り出したデータ
     private _mixtureData: Array<string> = []; // _dataBeforeConvertをsplitした後の情報が混じったデータ
+
+    private _dataAfterSliced: Array<DataEachDay> = []; // 日ごとに変換したデータをまとめたフィールド
 
     /**
      * コンストラクタ: 引数のExtensionContextをこのクラスに代入する
@@ -96,7 +104,7 @@ export class Data{
             }
 
             //fs.appendFileSync(Data._context.globalStorageUri.fsPath, output); // ファイルに追加書き込みする
-            console.log(input);
+            //console.log(input);
         } // 000000000?undefined-1?234?\n?
 
         this.dataOutput();
@@ -105,15 +113,23 @@ export class Data{
     /**
      * データを取り出すメソッド
      */
-    public dataOutput(){
+    public dataOutput(): void{
         Data._buffer = fs.readFileSync(Data._context.globalStorageUri.fsPath); // globalStorage内のデータすべてを取り出す
         //console.log(Buffer.from(Data._buffer).toString());
 
         // 読み込んだデータを扱いやすい型で分けて格納する
         this._dataConvert();
 
+        
         for(let i = 0; i < Data._outputFileName.length; i++){
-            console.log("file name: " + Data._outputFileName[i] + " num of string:" + Data._strNum[i] + " stamp:" + Data._timestamp[i]);
+            //console.log("file name: " + Data._outputFileName[i] + " num of string:" + Data._strNum[i] + " stamp:" + Data._timestamp[i]);
+        }
+
+        // 扱いやすい型に変換したデータを日ごとにまとめて格納する
+        this._sliceDataEachDay();
+        console.log(this._dataAfterSliced.length);
+        for(let i = 0; i < this._dataAfterSliced.length; i++){
+            //console.log(this._dataAfterSliced[i].timeStamp);
         }
     }
 
@@ -159,6 +175,35 @@ export class Data{
     }
 
     /**
+     * 変換したデータを日ごとにまとめるメソッド
+     */
+    private _sliceDataEachDay(): void{
+        let dateNow = new Date(); // 現在の日付
+
+        for(let i = 0; i < 30 ; i++){
+            let datePast = new Date(); // 過去の日付
+            datePast.setDate(dateNow.getDate() - i); // 現在からi日前の日を格納する
+            let template = new DataEachDay();
+
+            for(let j = 0; j < Data._timestamp.length; j++){
+                let dateTimeStamp = new Date(Data._timestamp[j]);
+                if(datePast.getDate() === dateTimeStamp.getDate()){ // タイムスタンプの日とi日前の日が一致するなら
+                                        
+                    template.timeStamp.push(Data._timestamp[j]); // タイムスタンプを代入用配列の最後尾に追加する
+                    template.filename.push(Data._outputFileName[j]); // ファイル名を代入用配列の最後尾に追加する
+                    template.numOfStr.push(Data._strNum[j]); // 文字数を代入用配列の最後尾に追加する
+                    
+                }
+            }
+
+            if(template.filename.length !== 0){ // template に何も代入されていないなら
+                this._dataAfterSliced.push(template); // 代入用配列を出力用のデータに追加する
+                console.log(template);
+            }
+        }
+    }
+
+    /**
      * タイムスタンプを配列で返すメソッド
      * @returns {number[]} タイムスタンプ
      */
@@ -180,6 +225,14 @@ export class Data{
      */
     public returnNumOfString(): number[]{
         return Data._strNum;
+    }
+
+    /**
+     * 日ごとに分割したデータをまとめて返すメソッド
+     * @returns {DataEachDay[]} _dataAfterSliced
+     */
+    public returnDataEachDay(): DataEachDay[]{
+        return this._dataAfterSliced;
     }
 }
 
