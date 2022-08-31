@@ -13,7 +13,9 @@ const MINITES = 0; // m
 const SECONDS = 10; // s
 const INTERVAL = 15000; // ms : 30秒
 let sumOfStr = 0;
+let sumOfLine = 0;
 let diffOfStr = new Array();
+let diffOfLine = new Array();
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -67,6 +69,16 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data){
 
 	sumOfStr = strNum;
 
+	let strLine = charcount.returnLineNum();
+	console.log("合計文字:", strLine);
+	if(diffOfLine.length > 5) {
+		diffOfLine.shift();
+	}
+	diffOfLine.push(strLine-sumOfLine);
+	console.log("今回書いた文字量:", diffOfLine);
+
+	sumOfLine = strLine;
+
 	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibNNjxJIu-0NU_bkVjslf6-CN7u6VGUUQsst4_-_PhGbaASpwuoDsF6fvtliWir7rfrB45XGZHdEbVCAp1utUWG7dhfWDp2-DG_r3-s0agCs5srD2qqRjaQdYXYE-iBd2BGloB_J62bjZYJ0pGdIAQsyMMNTCbJtaqVeUYtwfxB1SmxoNB-qQMQSGp/s1000/11792.gif'};
 
 	function getWebviewContent(kyuukeiResult: keyof typeof kyuukeiFigures) {
@@ -101,7 +113,7 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data){
 		path.join(context.extensionPath, 'src', 'graph.js')
 	);
 	const graphSrc = graphPanell.webview.asWebviewUri(graphPath);
-	graphPanell.webview.html = getWebviewContents(graphSrc, diffOfStr);
+	graphPanell.webview.html = getWebviewContents(graphSrc, diffOfStr, diffOfLine);
 	timer(MINITES,SECONDS, context, graphPanell, input);// 分：秒
 }
 
@@ -134,7 +146,7 @@ function timer(min: number, sec: number, context: vscode.ExtensionContext, panel
 	}
 }
 
-function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>){
+function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>, diffOfLine: Array<number>){
 	return `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -150,6 +162,7 @@ function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>){
 		</div>
 		<script>
 		var diffOfStr = `+  JSON.stringify(diffOfStr) +`;
+		var diffOfLine = `+  JSON.stringify(diffOfLine) +`;
 		</script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
 		<script src=` + graphSrc + `></script>
