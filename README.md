@@ -1,7 +1,9 @@
 # BreakTime README
 
 This is the README for your extension "BreakTime". This will notify you after a certain amount of time on the vscode, prompting you to take a break.
-
+これは休憩を促してくれるVSCODE上の拡張機能である。
+「作業25分＋休息5分」は、人間にとって最大限の生産性と効率性を引き出すことができる時間である。
+このサイクルを利用し、プログラミングを行う全てのプログラマーの最大限のパフォーマンスを引き出すことを目的とする。
 ## Features
 
 Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
