@@ -9,8 +9,8 @@ import count = require('./count/count'); // count.tsにある文字数カウン�
 import globalData = require("./count/controlData");
 
 const MINITES = 0; // m
-const SECONDS = 30; // s
-const INTERVAL = 30000; // ms : 30秒
+const SECONDS = 10; // s
+const INTERVAL = 5000; // ms : 30秒
 
 
 // this method is called when your extension is activated
@@ -68,7 +68,7 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data, co
 
 	input.dataInput(content); // データをglobalStorageに格納する
 	
-	console.log(input.returnNumOfString());
+	//console.log(input.returnNumOfString());
 	
 
 	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibNNjxJIu-0NU_bkVjslf6-CN7u6VGUUQsst4_-_PhGbaASpwuoDsF6fvtliWir7rfrB45XGZHdEbVCAp1utUWG7dhfWDp2-DG_r3-s0agCs5srD2qqRjaQdYXYE-iBd2BGloB_J62bjZYJ0pGdIAQsyMMNTCbJtaqVeUYtwfxB1SmxoNB-qQMQSGp/s1000/11792.gif'};
