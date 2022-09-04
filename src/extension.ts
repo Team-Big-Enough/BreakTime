@@ -70,12 +70,12 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data){
 	sumOfStr = strNum;
 
 	let strLine = charcount.returnLineNum();
-	console.log("合計文字:", strLine);
+	console.log("合計行数:", strLine);
 	if(diffOfLine.length > 5) {
 		diffOfLine.shift();
 	}
 	diffOfLine.push(strLine-sumOfLine);
-	console.log("今回書いた文字量:", diffOfLine);
+	console.log("今回書いた行数:", diffOfLine);
 
 	sumOfLine = strLine;
 
@@ -93,10 +93,6 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data){
 		</body>
 		</html>`;
 	}
-	// const kyuukeiCandidates = ['休憩'] as const;
-	// const kyuukeiResult = kyuukeiCandidates[Math.floor(Math.random() * kyuukeiCandidates.length)];
-	// const panel = vscode.window.createWebviewPanel('breaktime',`お疲れ様です。${kyuukeiResult}のお時間です！`,vscode.ViewColumn.One,{});
-	// panel.webview.html = getWebviewContent(kyuukeiResult);
 
 	// webviewはローカルリソースに直接アクセスできないらしい
 	// 読み込みたいときはWebview.asWebviewUri関数を使って、読み込める形に変換しないといけない
@@ -156,7 +152,7 @@ function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>, diff
 		<title>title</title>
 	</head>
 	<body>
-		<h1>お疲れ様です！</h1>
+		<h1>お疲れ様です！よく頑張りましたね👏</h1>
 		<div>
 			<canvas id="graph" width="100%"></canvas>
 		</div>
