@@ -7,6 +7,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
 import globalData = require("./count/controlData");
+import sidebar = require("./sidebar/sidebar_webview"); // サイドバー用のモジュール
 
 const MINITES = 0; // m
 const SECONDS = 10; // s
@@ -25,20 +26,17 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "vscode-breaktime" is now active!');
 	let data = new globalData.Data(context);
 
+	const progressViewProvider = new sidebar.ProgressView(context.extensionUri); // github の四角の集合のようなものの表示
+	
+
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
-	let disposable = vscode.commands.registerCommand('vscode-breaktime.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		setTimeout(startbreak, INTERVAL, context, data);
-	});
-
-	context.subscriptions.push(disposable);
+	setTimeout(startbreak, INTERVAL, context, data);
 	// リソース解放
-	//context.subscriptions.push(disposable);
-	// context.subscriptions.push(countEventCont);
+	context.subscriptions.push(vscode.window.registerWebviewViewProvider("left-panel-webview", progressViewProvider));
+	
 }
 
 // this method is called when your extension is deactivated
