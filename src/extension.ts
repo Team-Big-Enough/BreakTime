@@ -19,11 +19,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {
-
-}
-
 /**
  * ランダムに配列の中身を一つ返す
  * @param {Array<string>} array string型の配列
@@ -71,7 +66,7 @@ function setTimer(min: number, sec: number, stateFlag: boolean){
  * @param {NodeJS.Timer} id タイマーID
  * @param {boolean} stateFlag 状態管理フラグ（）
  */
-function clearTimer(id: NodeJS.Timer, stateFlag: boolean){	//, input: globalData.Data, content: count.CharCount
+function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 	// メッセージを考える
 	const breakMessage: Array<string> = [
 		'休憩してください。1',
@@ -101,12 +96,12 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){	//, input: globalData
             if(value?.isCloseAffordance){
                 setTimer(MINITES, SECONDS, false);      // 休憩する
 
-                // input.dataInput(content);   // データをglobalStorageに格納する
-											   // 要相談(構造的にsetTimerの引数にもinput, contentが必要になる	
-											   // 		 都度インスタンスの生成でもいい？)
-
+				// globalStorageに格納する
                 // ビューの表示
-            }else{ setTimer(MINITES, SECONDS, true); }  // 休憩せずに作業を続ける
+
+            }else{ 
+				setTimer(MINITES, SECONDS, true); // 休憩せずに作業を続ける
+			}  
         }else{ 
             if(value?.isCloseAffordance){
                 setTimer(MINITES, SECONDS, true);       // 作業する
@@ -116,49 +111,4 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){	//, input: globalData
             }
         }
 	});
-}
-	// webviewはローカルリソースに直接アクセスできないらしい
-	// 読み込みたいときはWebview.asWebviewUri関数を使って、読み込める形に変換しないといけない
-	// https://code.visualstudio.com/api/extension-guides/webview#loading-local-content
-	// Create and show a new webview
-	// const panell = vscode.window.createWebviewPanel(
-	// 	'Graph', // Identifies the type of the webview. Used internally
-	// 	'test area', // Title of the panel displayed to the user
-	// 	vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
-	// 	{enableScripts: true} // Webview options. More on these later.
-	// );
-
-	// const graphPath = vscode.Uri.file(
-	// 	path.join(context.extensionPath, 'src', 'graph.js')
-	// );
-	// const graphSrc = panell.webview.asWebviewUri(graphPath);
-
-	// panell.webview.html = getWebviewContents(graphSrc);
-
-
-function getWebviewContents(graphSrc: vscode.Uri){
-	return `
-	<!DOCTYPE html>
-	<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>title</title>
-	</head>
-	<body>
-		<h1>title</h1>
-
-		<div class=""><input type="radio" name="analysis" value="bar" checked>縦棒グラフ</div>
-		<div class=""><input type="radio" name="analysis" value="Line">折れ線グラフ</div>
-		<div class=""><input type="radio" name="analysis" value="3">散布図</div>
-
-		<div>
-			<canvas id="graph" width="100%"></canvas>
-		</div>
-
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
-		<script src=` + graphSrc + `></script>
-	</body>
-	</html>
-	`;
 }
