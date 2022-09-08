@@ -4,19 +4,14 @@ import globalData = require("./count/controlData");
 
 const MINITES = 0;
 const SECONDS = 2;
+let CONTEXT: vscode.ExtensionContext;
 export function activate(context: vscode.ExtensionContext) {
-
 	console.log('Congratulations, your extension "vscode-breaktime" is now active!');
-
-	let charCount = new count.CharCount();
-	let countEventCont = new count.CountEventController(charCount);
-	let data = new globalData.Data(context);
+	CONTEXT = context;
 
 	setTimer(MINITES, SECONDS, true);
 
 	// リソース解放
-	context.subscriptions.push(countEventCont);
-
 }
 
 /**
@@ -96,8 +91,10 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
             if(value?.isCloseAffordance){
                 setTimer(MINITES, SECONDS, false);      // 休憩する
 
-				// globalStorageに格納する
-                // ビューの表示
+				let input = new globalData.Data(CONTEXT);
+				let charCount = new count.CharCount();
+				input.dataInput(charCount);	// globalStorageに格納する
+                // グラフの表示
 
             }else{ 
 				setTimer(MINITES, SECONDS, true); // 休憩せずに作業を続ける
@@ -107,7 +104,6 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
                 setTimer(MINITES, SECONDS, true);       // 作業する
             }else{
                 setTimer(MINITES, SECONDS, false);      // 作業せずに休憩を続ける
-                // ビューの表示
             }
         }
 	});
