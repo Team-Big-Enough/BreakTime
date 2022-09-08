@@ -10,17 +10,9 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-breaktime.helloWorld"
-  ],
+    "onStartupFinished"
+  ],  
   "main": "./dist/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "vscode-breaktime.helloWorld",
-        "title": "Hello World"
-      }
-    ]
-  },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
@@ -35,7 +27,7 @@
   "devDependencies": {
     "@types/glob": "^7.2.0",
     "@types/mocha": "^9.1.1",
-    "@types/node": "^16.11.48",
+    "@types/node": "^16.11.56",
     "@types/vscode": "^1.69.0",
     "@typescript-eslint/eslint-plugin": "^5.30.0",
     "@typescript-eslint/parser": "^5.30.0",
