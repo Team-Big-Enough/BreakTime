@@ -16,7 +16,7 @@ let sumOfStr = 0;
 let sumOfLine = 0;
 let diffOfStr = new Array();
 let diffOfLine = new Array();
-let contextG: vscode.ExtensionContext;
+let contextG: vscode.ExtensionContext; // deactivate用のExtensionContextを格納するフィールド
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -44,6 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated (vscodeを閉じるときにも動作する)
 export function deactivate() {
 	console.log("deactivate");
+	// 文字数カウントをアップデートさせる
 	let charCount = new count.CharCount();
 	charCount.updateCount();
 
