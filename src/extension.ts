@@ -16,10 +16,12 @@ let sumOfStr = 0;
 let sumOfLine = 0;
 let diffOfStr = new Array();
 let diffOfLine = new Array();
+let contextG: vscode.ExtensionContext;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	contextG = context;
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -39,9 +41,16 @@ export function activate(context: vscode.ExtensionContext) {
 	
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
+// this method is called when your extension is deactivated (vscodeを閉じるときにも動作する)
+export function deactivate() {
+	console.log("deactivate");
+	let charCount = new count.CharCount();
+	charCount.updateCount();
 
+	// 文字数のデータをglobalStorageに格納する
+	let input = new globalData.Data(contextG);
+	input.dataInput(charCount);
+}
 /*
 *タイマーをセットする
 */
@@ -52,6 +61,7 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data){
 
 	let charcount = new count.CharCount();
 	let countEventCont = new count.CountEventController(charcount);
+	context.subscriptions.push(countEventCont);
 
 	input.dataInput(charcount); // データをglobalStorageに格納する
 
