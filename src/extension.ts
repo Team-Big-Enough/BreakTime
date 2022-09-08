@@ -7,6 +7,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
 import globalData = require("./count/controlData");
+import sidebar = require("./sidebar/sidebar_webview"); // サイドバー用のモジュール
 
 const MINITES = 0; // m
 const SECONDS = 10; // s
@@ -15,35 +16,42 @@ let sumOfStr = 0;
 let sumOfLine = 0;
 let diffOfStr = new Array();
 let diffOfLine = new Array();
+let contextG: vscode.ExtensionContext; // deactivate用のExtensionContextを格納するフィールド
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	contextG = context;
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "vscode-breaktime" is now active!');
 	let data = new globalData.Data(context);
 
+	const progressViewProvider = new sidebar.ProgressView(context.extensionUri); // github の四角の集合のようなものの表示
+	
+
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
-	let disposable = vscode.commands.registerCommand('vscode-breaktime.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		setTimeout(startbreak, INTERVAL, context, data);
-	});
-
-	context.subscriptions.push(disposable);
+	setTimeout(startbreak, INTERVAL, context, data);
 	// リソース解放
-	//context.subscriptions.push(disposable);
-	// context.subscriptions.push(countEventCont);
+	context.subscriptions.push(vscode.window.registerWebviewViewProvider("left-panel-webview", progressViewProvider));
+	
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
+// this method is called when your extension is deactivated (vscodeを閉じるときにも動作する)
+export function deactivate() {
+	console.log("deactivate");
+	// 文字数カウントをアップデートさせる
+	let charCount = new count.CharCount();
+	charCount.updateCount();
 
+	// 文字数のデータをglobalStorageに格納する
+	let input = new globalData.Data(contextG);
+	input.dataInput(charCount);
+}
 /*
 *タイマーをセットする
 */
@@ -54,6 +62,7 @@ function startbreak(context: vscode.ExtensionContext, input: globalData.Data){
 
 	let charcount = new count.CharCount();
 	let countEventCont = new count.CountEventController(charcount);
+	context.subscriptions.push(countEventCont);
 
 	input.dataInput(charcount); // データをglobalStorageに格納する
 
