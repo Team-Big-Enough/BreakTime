@@ -11,8 +11,30 @@
   ],
   "activationEvents": [
     "onStartupFinished"
-  ],  
+  ],
   "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "BreakTimeContainer",
+          "title": "BreakTime",
+          "icon": "./svg/grass-svgrepo-com.svg"
+        }
+      ]
+    },
+    "views": {
+      "BreakTimeContainer": [
+        {
+          "type": "webview",
+          "id": "left-panel-webview",
+          "icon": "src/svg/grass-svgrepo-com.svg",
+          "name": "BreakTime"
+        }
+      ]
+    },
+    "commands": []
+  },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
@@ -25,22 +47,19 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/glob": "^7.2.0",
+    "@types/glob": "^8.0.0",
     "@types/mocha": "^9.1.1",
-    "@types/node": "^16.11.56",
-    "@types/vscode": "^1.69.0",
-    "@typescript-eslint/eslint-plugin": "^5.30.0",
-    "@typescript-eslint/parser": "^5.30.0",
+    "@types/node": "^18.7.16",
+    "@types/vscode": "^1.71.0",
+    "@typescript-eslint/eslint-plugin": "^5.36.2",
+    "@typescript-eslint/parser": "^5.36.2",
     "@vscode/test-electron": "^2.1.5",
-    "eslint": "^8.18.0",
+    "eslint": "^8.23.0",
     "glob": "^8.0.3",
     "mocha": "^10.0.0",
     "ts-loader": "^9.3.1",
-    "typescript": "^4.7.4",
-    "webpack": "^5.73.0",
+    "typescript": "^4.8.2",
+    "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
-  },
-  "dependencies": {
-    "chart.js": "^3.8.0"
   }
 }
