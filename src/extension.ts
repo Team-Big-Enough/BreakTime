@@ -149,122 +149,122 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 /*
 *タイマーをセットする
 */
-function startbreak(context: vscode.ExtensionContext, input: globalData.Data){
-	vscode.window.showInformationMessage('休憩してください！', {
-		modal: true,
-	});
+// function startbreak(context: vscode.ExtensionContext, input: globalData.Data){
+// 	vscode.window.showInformationMessage('休憩してください！', {
+// 		modal: true,
+// 	});
 
-	let charcount = new count.CharCount();
-	let countEventCont = new count.CountEventController(charcount);
-	context.subscriptions.push(countEventCont);
+// 	let charcount = new count.CharCount();
+// 	let countEventCont = new count.CountEventController(charcount);
+// 	context.subscriptions.push(countEventCont);
 
-	input.dataInput(charcount); // データをglobalStorageに格納する
+// 	input.dataInput(charcount); // データをglobalStorageに格納する
 
-	// 前回休憩時の文字数と今回の休憩までの文字数の差分を取得
-	let strNum = input.returnNumOfString().slice(-1)[0];
-	console.log("合計文字:", strNum);
-	if(diffOfStr.length > 5) {
-		diffOfStr.shift();
-	}
-	diffOfStr.push(strNum-sumOfStr);
-	console.log("今回書いた文字量:", diffOfStr);
+// 	// 前回休憩時の文字数と今回の休憩までの文字数の差分を取得
+// 	let strNum = input.returnNumOfString().slice(-1)[0];
+// 	console.log("合計文字:", strNum);
+// 	if(diffOfStr.length > 5) {
+// 		diffOfStr.shift();
+// 	}
+// 	diffOfStr.push(strNum-sumOfStr);
+// 	console.log("今回書いた文字量:", diffOfStr);
 
-	sumOfStr = strNum;
+// 	sumOfStr = strNum;
 
-	let strLine = charcount.returnLineNum();
-	console.log("合計行数:", strLine);
-	if(diffOfLine.length > 5) {
-		diffOfLine.shift();
-	}
-	diffOfLine.push(strLine-sumOfLine);
-	console.log("今回書いた行数:", diffOfLine);
+// 	let strLine = charcount.returnLineNum();
+// 	console.log("合計行数:", strLine);
+// 	if(diffOfLine.length > 5) {
+// 		diffOfLine.shift();
+// 	}
+// 	diffOfLine.push(strLine-sumOfLine);
+// 	console.log("今回書いた行数:", diffOfLine);
 
-	sumOfLine = strLine;
+// 	sumOfLine = strLine;
 
-	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibNNjxJIu-0NU_bkVjslf6-CN7u6VGUUQsst4_-_PhGbaASpwuoDsF6fvtliWir7rfrB45XGZHdEbVCAp1utUWG7dhfWDp2-DG_r3-s0agCs5srD2qqRjaQdYXYE-iBd2BGloB_J62bjZYJ0pGdIAQsyMMNTCbJtaqVeUYtwfxB1SmxoNB-qQMQSGp/s1000/11792.gif'};
+// 	const kyuukeiFigures = {'休憩': 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEibNNjxJIu-0NU_bkVjslf6-CN7u6VGUUQsst4_-_PhGbaASpwuoDsF6fvtliWir7rfrB45XGZHdEbVCAp1utUWG7dhfWDp2-DG_r3-s0agCs5srD2qqRjaQdYXYE-iBd2BGloB_J62bjZYJ0pGdIAQsyMMNTCbJtaqVeUYtwfxB1SmxoNB-qQMQSGp/s1000/11792.gif'};
 
-	function getWebviewContent(kyuukeiResult: keyof typeof kyuukeiFigures) {
-		return `<!DOCTYPE html>
-		<html lang="ja">
-		<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		</head>
-		<body>
-		<img src="${kyuukeiFigures[kyuukeiResult]}" />
-		</body>
-		</html>`;
-	}
+// 	function getWebviewContent(kyuukeiResult: keyof typeof kyuukeiFigures) {
+// 		return `<!DOCTYPE html>
+// 		<html lang="ja">
+// 		<head>
+// 		<meta charset="UTF-8">
+// 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+// 		</head>
+// 		<body>
+// 		<img src="${kyuukeiFigures[kyuukeiResult]}" />
+// 		</body>
+// 		</html>`;
+// 	}
 
-	// webviewはローカルリソースに直接アクセスできないらしい
-	// 読み込みたいときはWebview.asWebviewUri関数を使って、読み込める形に変換しないといけない
-	// https://code.visualstudio.com/api/extension-guides/webview#loading-local-content
-	// Create and show a new webview
-	const graphPanell = vscode.window.createWebviewPanel(
-		'Graph', // Identifies the type of the webview. Used internally
-		'test area', // Title of the panel displayed to the user
-		vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
-		{enableScripts: true} // Webview options. More on these later.
-	);
+// 	// webviewはローカルリソースに直接アクセスできないらしい
+// 	// 読み込みたいときはWebview.asWebviewUri関数を使って、読み込める形に変換しないといけない
+// 	// https://code.visualstudio.com/api/extension-guides/webview#loading-local-content
+// 	// Create and show a new webview
+// 	const graphPanell = vscode.window.createWebviewPanel(
+// 		'Graph', // Identifies the type of the webview. Used internally
+// 		'test area', // Title of the panel displayed to the user
+// 		vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
+// 		{enableScripts: true} // Webview options. More on these later.
+// 	);
 
-	const graphPath = vscode.Uri.file(
-		path.join(context.extensionPath, 'src', 'graph.js')
-	);
-	const graphSrc = graphPanell.webview.asWebviewUri(graphPath);
-	graphPanell.webview.html = getWebviewContents(graphSrc, diffOfStr, diffOfLine);
-	timer(MINITES,SECONDS, context, graphPanell, input);// 分：秒
-}
+// 	const graphPath = vscode.Uri.file(
+// 		path.join(context.extensionPath, 'src', 'graph.js')
+// 	);
+// 	const graphSrc = graphPanell.webview.asWebviewUri(graphPath);
+// 	graphPanell.webview.html = getWebviewContents(graphSrc, diffOfStr, diffOfLine);
+// 	timer(MINITES,SECONDS, context, graphPanell, input);// 分：秒
+// }
 
 /*
 *タイマー開始
 */
-function timer(min: number, sec: number, context: vscode.ExtensionContext, panel: any, input: globalData.Data){
+// function timer(min: number, sec: number, context: vscode.ExtensionContext, panel: any, input: globalData.Data){
 
-	if(sec - 1 === -1){
-		min --;
-		sec = 59;
-	}
-	else{
-		sec --;
-	}
-	// console.log(min, sec);
-	// vscode.window.showInformationMessage("残り"+min+ "分"+sec+"秒です!");
-	vscode.window.setStatusBarMessage("残り"+min+ "分"+sec+"秒です!", min*60000+sec*1000);
-	var id = setTimeout(timer, 1000, min, sec, context, panel, input);
-	// var id = setInterval(timer, 2000, min, sec);
+// 	if(sec - 1 === -1){
+// 		min --;
+// 		sec = 59;
+// 	}
+// 	else{
+// 		sec --;
+// 	}
+// 	// console.log(min, sec);
+// 	// vscode.window.showInformationMessage("残り"+min+ "分"+sec+"秒です!");
+// 	vscode.window.setStatusBarMessage("残り"+min+ "分"+sec+"秒です!", min*60000+sec*1000);
+// 	var id = setTimeout(timer, 1000, min, sec, context, panel, input);
+// 	// var id = setInterval(timer, 2000, min, sec);
 
-	// 終了
-	if(min < 0 ){
-		panel.dispose();
-		clearTimeout(id);
-		vscode.window.showInformationMessage('休憩終了です！', {
-			modal: true,
-		});
-		setTimeout(startbreak, INTERVAL, context,input);
-	}
-}
+// 	// 終了
+// 	if(min < 0 ){
+// 		panel.dispose();
+// 		clearTimeout(id);
+// 		vscode.window.showInformationMessage('休憩終了です！', {
+// 			modal: true,
+// 		});
+// 		setTimeout(startbreak, INTERVAL, context,input);
+// 	}
+// }
 
-function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>, diffOfLine: Array<number>){
-	return `
-	<!DOCTYPE html>
-	<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>title</title>
-	</head>
-	<body>
-		<h1>お疲れ様です！よく頑張りましたね👏</h1>
-		<div>
-			<canvas id="graph" width="100%"></canvas>
-		</div>
-		<script>
-		var diffOfStr = `+  JSON.stringify(diffOfStr) +`;
-		var diffOfLine = `+  JSON.stringify(diffOfLine) +`;
-		</script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
-		<script src=` + graphSrc + `></script>
-	</body>
-	</html>
-	`;
-}
+// function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>, diffOfLine: Array<number>){
+// 	return `
+// 	<!DOCTYPE html>
+// 	<html lang="en">
+// 	<head>
+// 		<meta charset="UTF-8">
+// 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+// 		<title>title</title>
+// 	</head>
+// 	<body>
+// 		<h1>お疲れ様です！よく頑張りましたね👏</h1>
+// 		<div>
+// 			<canvas id="graph" width="100%"></canvas>
+// 		</div>
+// 		<script>
+// 		var diffOfStr = `+  JSON.stringify(diffOfStr) +`;
+// 		var diffOfLine = `+  JSON.stringify(diffOfLine) +`;
+// 		</script>
+// 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
+// 		<script src=` + graphSrc + `></script>
+// 	</body>
+// 	</html>
+// 	`;
+// }
