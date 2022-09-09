@@ -25,10 +25,10 @@ export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "vscode-breaktime" is now active!');
-	
+
 
 	const progressViewProvider = new sidebar.ProgressView(context.extensionUri); // github の四角の集合のようなものの表示
-	
+
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -37,7 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
 	setTimer(MINITES, SECONDS, true);
 	// リソース解放
 	context.subscriptions.push(vscode.window.registerWebviewViewProvider("left-panel-webview", progressViewProvider));
-	
+
 }
 
 // this method is called when your extension is deactivated (vscodeを閉じるときにも動作する)
@@ -95,7 +95,7 @@ function setTimer(min: number, sec: number, stateFlag: boolean){
 }
 
 /**
- * タイマー終了 
+ * タイマー終了
  * @param {NodeJS.Timer} id タイマーID
  * @param {boolean} stateFlag 状態管理フラグ（）
  */
@@ -124,26 +124,59 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 		{ title: 'はい', isCloseAffordance: true }
 	);
 
-	window.then((value) => {
-		if(stateFlag){ 
-      if(value?.isCloseAffordance){
-        setTimer(MINITES, SECONDS, false);      // 休憩する
 
-        let input = new globalData.Data(contextG);
-        let charCount = new count.CharCount();
-        input.dataInput(charCount);	// globalStorageに格納する
-        // グラフの表示
-      }else{ 
-        setTimer(MINITES, SECONDS, true); // 休憩せずに作業を続ける
-      }  
-    }else{ 
-      if(value?.isCloseAffordance){
-          setTimer(MINITES, SECONDS, true);       // 作業する
-      }else{
-          setTimer(MINITES, SECONDS, false);      // 作業せずに休憩を続ける
-      }
-    }
-	});
+
+	window.then((value) => {
+		if(stateFlag){
+			if(value?.isCloseAffordance){
+				setTimer(MINITES, SECONDS, false);      // 休憩する
+
+				let input = new globalData.Data(contextG);
+				let charCount = new count.CharCount();
+				let countEventCont = new count.CountEventController(charCount);
+				contextG.subscriptions.push(countEventCont);
+				input.dataInput(charCount);	// globalStorageに格納する
+
+				// 前回休憩時の文字数と今回の休憩までの文字数の差分を取得
+				let strNum = input.returnNumOfString().slice(-1)[0];
+				if(diffOfStr.length > 5) {
+					diffOfStr.shift();
+				}
+				diffOfStr.push(strNum-sumOfStr);
+				sumOfStr = strNum;
+
+				let strLine = charCount.returnLineNum();
+				if(diffOfLine.length > 5) {
+					diffOfLine.shift();
+				}
+				diffOfLine.push(strLine-sumOfLine);
+				sumOfLine = strLine;
+
+				// グラフの表示
+				const graphPanel = vscode.window.createWebviewPanel(
+					'Graph', // Identifies the type of the webview. Used internally
+					'test area', // Title of the panel displayed to the user
+					vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
+					{enableScripts: true} // Webview options. More on these later.
+				);
+
+				const graphPath = vscode.Uri.file(
+					path.join(contextG.extensionPath, 'src', 'graph.js')
+				);
+				const graphSrc = graphPanel.webview.asWebviewUri(graphPath);
+				graphPanel.webview.html = getWebviewContents(graphSrc, diffOfStr, diffOfLine);
+
+			}else{
+				setTimer(MINITES, SECONDS, true); // 休憩せずに作業を続ける
+			}
+    	}else{
+			if(value?.isCloseAffordance){
+				setTimer(MINITES, SECONDS, true);       // 作業する
+			}else{
+				setTimer(MINITES, SECONDS, false);      // 作業せずに休憩を続ける
+			}
+			}
+		});
 }
 
 /*
@@ -244,27 +277,27 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 // 	}
 // }
 
-// function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>, diffOfLine: Array<number>){
-// 	return `
-// 	<!DOCTYPE html>
-// 	<html lang="en">
-// 	<head>
-// 		<meta charset="UTF-8">
-// 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-// 		<title>title</title>
-// 	</head>
-// 	<body>
-// 		<h1>お疲れ様です！よく頑張りましたね👏</h1>
-// 		<div>
-// 			<canvas id="graph" width="100%"></canvas>
-// 		</div>
-// 		<script>
-// 		var diffOfStr = `+  JSON.stringify(diffOfStr) +`;
-// 		var diffOfLine = `+  JSON.stringify(diffOfLine) +`;
-// 		</script>
-// 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
-// 		<script src=` + graphSrc + `></script>
-// 	</body>
-// 	</html>
-// 	`;
-// }
+function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>, diffOfLine: Array<number>){
+	return `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>title</title>
+	</head>
+	<body>
+		<h1>お疲れ様です！よく頑張りましたね👏</h1>
+		<div>
+			<canvas id="graph" width="100%"></canvas>
+		</div>
+		<script>
+		var diffOfStr = `+  JSON.stringify(diffOfStr) +`;
+		var diffOfLine = `+  JSON.stringify(diffOfLine) +`;
+		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
+		<script src=` + graphSrc + `></script>
+	</body>
+	</html>
+	`;
+}
