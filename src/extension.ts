@@ -11,6 +11,7 @@ import sidebar = require("./sidebar/sidebar_webview"); // サイドバー用の�
 
 const MINITES = 0; // m
 const SECONDS = 10; // s
+let graphPanel: any
 let sumOfStr = 0;
 let sumOfLine = 0;
 let diffOfStr = new Array();
@@ -25,11 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "vscode-breaktime" is now active!');
-
-
 	const progressViewProvider = new sidebar.ProgressView(context.extensionUri); // github の四角の集合のようなものの表示
-
-
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
@@ -125,7 +122,6 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 	);
 
 
-
 	window.then((value) => {
 		if(stateFlag){
 			if(value?.isCloseAffordance){
@@ -153,7 +149,7 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 				sumOfLine = strLine;
 
 				// グラフの表示
-				const graphPanel = vscode.window.createWebviewPanel(
+				graphPanel = vscode.window.createWebviewPanel(
 					'Graph', // Identifies the type of the webview. Used internally
 					'test area', // Title of the panel displayed to the user
 					vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
@@ -171,6 +167,7 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 			}
     	}else{
 			if(value?.isCloseAffordance){
+				graphPanel.dispose();
 				setTimer(MINITES, SECONDS, true);       // 作業する
 			}else{
 				setTimer(MINITES, SECONDS, false);      // 作業せずに休憩を続ける
