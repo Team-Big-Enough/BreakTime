@@ -11,17 +11,23 @@ import sidebar = require("./sidebar/sidebar_webview"); // サイドバー用の�
 
 const MINITES = 0; // m
 const SECONDS = 10; // s
-let graphPanel: any
+let graphPanel: any;
 let sumOfStr = 0;
 let sumOfLine = 0;
 let diffOfStr = new Array();
 let diffOfLine = new Array();
 let contextG: vscode.ExtensionContext; // deactivate用のExtensionContextを格納するフィールド
+let charCount = new count.CharCount();
+let countEventCont = new count.CountEventController(charCount);
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	contextG = context;
+	
+	context.subscriptions.push(countEventCont);
+	let controlData = new globalData.Data(context);
+	charCount.updateHistory(controlData);
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -40,6 +46,8 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated (vscodeを閉じるときにも動作する)
 export function deactivate() {
 	console.log("deactivate");
+
+	/*--- 終了時に記録していた文字数のデータをglobalStorageに移す(a1 start) ---*/
 	// 文字数カウントをアップデートさせる
 	let charCount = new count.CharCount();
 	charCount.updateCount();
@@ -47,6 +55,7 @@ export function deactivate() {
 	// 文字数のデータをglobalStorageに格納する
 	let input = new globalData.Data(contextG);
 	input.dataInput(charCount);
+	/*--- (a1 finish) ---*/
 }
 
 /**
@@ -128,25 +137,37 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 				setTimer(MINITES, SECONDS, false);      // 休憩する
 
 				let input = new globalData.Data(contextG);
-				let charCount = new count.CharCount();
-				let countEventCont = new count.CountEventController(charCount);
-				contextG.subscriptions.push(countEventCont);
+				
+				
 				input.dataInput(charCount);	// globalStorageに格納する
 
 				// 前回休憩時の文字数と今回の休憩までの文字数の差分を取得
-				let strNum = input.returnNumOfString().slice(-1)[0];
-				if(diffOfStr.length > 5) {
+				diffOfStr.push(charCount.calculateDiffStr());
+				console.log(charCount.calculateDiffStr());
+				console.log(charCount.returnHistory().filename);
+				console.log("diff:" + diffOfStr[diffOfStr.length - 1]);
+
+				if(diffOfStr.length > 5) { // 配列の長さが5より大きい場合5になるよう前のデータを消す
 					diffOfStr.shift();
 				}
-				diffOfStr.push(strNum-sumOfStr);
-				sumOfStr = strNum;
+				
 
+				diffOfLine.push(charCount.calculateDiffLin());
+				if(diffOfLine.length > 5) {
+					diffOfLine.shift();
+				}
+				console.log("lineDiff:" + diffOfLine);
+				/*
+				// 前回休憩時の行数と今回の差分を所得
 				let strLine = charCount.returnLineNum();
 				if(diffOfLine.length > 5) {
 					diffOfLine.shift();
 				}
-				diffOfLine.push(strLine-sumOfLine);
+				//diffOfLine.push(strLine-sumOfLine);
+				diffOfLine.push(0);
 				sumOfLine = strLine;
+				*/
+				
 
 				// グラフの表示
 				graphPanel = vscode.window.createWebviewPanel(
@@ -162,6 +183,7 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 				const graphSrc = graphPanel.webview.asWebviewUri(graphPath);
 				graphPanel.webview.html = getWebviewContents(graphSrc, diffOfStr, diffOfLine);
 
+				charCount.updateHistory(input); // _allHistoryを更新し次の差分用の比較物を用意する
 			}else{
 				setTimer(MINITES, SECONDS, true); // 休憩せずに作業を続ける
 			}

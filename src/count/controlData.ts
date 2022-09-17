@@ -7,6 +7,7 @@ export class DataEachDay{
     public timeStamp: Array<number> = []; // タイムスタンプ
     public filename: Array<string> = []; // ファイル名(ファイルの絶対パス)
     public numOfStr: Array<number> = []; // 文字数
+    public numOfLin: Array<number> = []; // 行数
 }
 
 /**
@@ -20,6 +21,7 @@ export class Data{
     private static _timestamp: Array<number> = []; // 出力用の変換後のタイムスタンプ
     private static _outputFileName: Array<string> = []; // 出力用の変換後のファイル名
     private static _strNum: Array<number> = []; // 出力用の変換後の文字数
+    private static _linNum: Array<number> = []; // 出力用の変換後の行数
 
     private _dataBeforeConvert: string = "none"; // 変換前の取り出したデータ
     private _mixtureData: Array<string> = []; // _dataBeforeConvertをsplitした後の情報が混じったデータ
@@ -32,6 +34,7 @@ export class Data{
      */
     constructor(context: vscode.ExtensionContext){
 		Data._context = context; // 引数のExtensionContextを格納
+        this.dataOutput();
 	}
 
     /**
@@ -40,7 +43,6 @@ export class Data{
      * @param {number} mode 書き込みのモード(0(デフォルト):現在のデータから1か月間のデータを書き込む, 1:データをすべて消去して新しく書き込む)
      */
     public dataInput(contents:count.CharCount, mode: number = 0) : void{
-        Data._inputFileName = contents.returnFileName(); // まとめてファイル名を受け取る
 
         let temp = new Date(); // 現在の時刻を所得
         let timestamp = temp.getTime(); // タイムスタンプに変換
@@ -58,6 +60,8 @@ export class Data{
                                 + "?" // ファイル名と文字数の境目をわかりやすくする
                                 + Data._strNum[i].toString() // 文字数
                                 + "?" // 区切り文字
+                                + Data._linNum[i].toString() // 行数
+                                + "?" // 区切り文字
                                 + "\n" // 改行
                                 + "?"
                                 ;
@@ -74,6 +78,7 @@ export class Data{
             }
         }
         
+        Data._inputFileName = contents.returnFileName(); // まとめてファイル名を受け取る
 
         for(let i = 0; i < Data._inputFileName.length; i++){
             // globalStorageに保存する文字列の作成
@@ -82,6 +87,8 @@ export class Data{
                                 + Data._inputFileName[i] // ファイル名
                                 + "?" // ファイル名と文字数の境目をわかりやすくする
                                 + contents.returnStrNum(Data._inputFileName[i]).toString() // 文字数
+                                + "?" // 区切り文字
+                                + contents.returnLineNum(Data._inputFileName[i]).toString() // 行数
                                 + "?" // 区切り文字
                                 + "\n" // 改行
                                 + "?"
@@ -107,30 +114,34 @@ export class Data{
             //console.log(input);
         } // 000000000?undefined-1?234?\n?
 
-        this.dataOutput();
+        this.dataOutput(); // 出力準備も行う
     }
     
     /**
      * データを取り出すメソッド
      */
     public dataOutput(): void{
+        fs.appendFileSync(Data._context.globalStorageUri.fsPath, "");
         Data._buffer = fs.readFileSync(Data._context.globalStorageUri.fsPath); // globalStorage内のデータすべてを取り出す
         //console.log(Buffer.from(Data._buffer).toString());
 
         // 読み込んだデータを扱いやすい型で分けて格納する
         this._dataConvert();
 
-        
+        /*
         for(let i = 0; i < Data._outputFileName.length; i++){
             //console.log("file name: " + Data._outputFileName[i] + " num of string:" + Data._strNum[i] + " stamp:" + Data._timestamp[i]);
         }
+        */
 
         // 扱いやすい型に変換したデータを日ごとにまとめて格納する
         this._sliceDataEachDay();
         console.log(this._dataAfterSliced.length);
+        /*
         for(let i = 0; i < this._dataAfterSliced.length; i++){
             //console.log(this._dataAfterSliced[i].timeStamp);
         }
+        */
     }
 
     /**
@@ -142,10 +153,12 @@ export class Data{
         this._mixtureData = this._dataBeforeConvert.split("?");
         //console.log("dou :" + this._mixtureData[3] + "fow:" + this._mixtureData[4]);
 
+        let commDiff = 5;
         for(let i = 0; 4 * i < this._mixtureData.length - 1; i++){
-            Data._timestamp[i] = parseInt(this._mixtureData[4 * i]);
-            Data._outputFileName[i] = this._mixtureData[4 * i + 1];
-            Data._strNum[i] = parseInt(this._mixtureData[4 * i + 2]);
+            Data._timestamp[i] = parseInt(this._mixtureData[commDiff * i]);
+            Data._outputFileName[i] = this._mixtureData[commDiff * i + 1];
+            Data._strNum[i] = parseInt(this._mixtureData[commDiff * i + 2]);
+            Data._linNum[i] = parseInt(this._mixtureData[commDiff * i + 3]);
         }
     }
 
@@ -179,6 +192,7 @@ export class Data{
      */
     private _sliceDataEachDay(): void{
         let dateNow = new Date(); // 現在の日付
+        let dataTemp: Array<DataEachDay> = [];
 
         for(let i = 0; i < 30 ; i++){
             let datePast = new Date(); // 過去の日付
@@ -192,15 +206,17 @@ export class Data{
                     template.timeStamp.push(Data._timestamp[j]); // タイムスタンプを代入用配列の最後尾に追加する
                     template.filename.push(Data._outputFileName[j]); // ファイル名を代入用配列の最後尾に追加する
                     template.numOfStr.push(Data._strNum[j]); // 文字数を代入用配列の最後尾に追加する
-                    
+                    template.numOfLin.push(Data._linNum[j]); // 行数を代入用配列の最後尾に追加する
                 }
             }
 
-            if(template.filename.length !== 0){ // template に何も代入されていないなら
-                this._dataAfterSliced.push(template); // 代入用配列を出力用のデータに追加する
+            if(template.filename.length !== 0){ // template に何か代入されているなら
+                dataTemp.push(template); // 代入用配列を出力用のデータに追加する
                 console.log(template);
             }
         }
+
+        this._dataAfterSliced = dataTemp;
     }
 
     /**
@@ -221,10 +237,18 @@ export class Data{
 
     /**
      * globalStorage内に保存されている文字数を返すメソッド
-     * @returns {number[]} 各ファイルごとの文字数
+     * @returns {Array<number>} 各ファイルごとの文字数
      */
     public returnNumOfString(): number[]{
         return Data._strNum;
+    }
+
+    /**
+     * globalStorage内に保存されている行数を返すメソッド
+     * @returns {Array<number>} 各ファイルの行数
+     */
+    public returnNumOfLine(): number[]{
+        return Data._linNum;
     }
 
     /**
