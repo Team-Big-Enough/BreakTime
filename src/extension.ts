@@ -108,16 +108,14 @@ function setTimer(min: number, sec: number, stateFlag: boolean){
 function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 	// メッセージを考える
 	const breakMessage: Array<string> = [
-		'休憩してください。1',
-		'休憩してください。2',
-		'休憩してください。3',
-		'休憩してください。4',
-	];
+		'休憩してください。',
+		'お疲れ様です。休憩の時間になりました',
+		'作業を開始してから' + MINITES + '分経過しました。',
+		'少し休憩しませんか'
+		];
 	const workMessage: Array<string> = [
-		'作業を開始してください。1',
-		'作業を開始してください。2',
-		'作業を開始してください。3',
-		'作業を開始してください。4',
+		'作業を開始してください。',
+		
 	];
 	const message: string = stateFlag
 		? getRandomMessage(breakMessage)
