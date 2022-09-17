@@ -9,6 +9,10 @@
   "categories": [
     "Other"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maple-fm/BreakTime"
+  },
   "activationEvents": [
     "onStartupFinished"
   ],
