@@ -6,8 +6,8 @@ import * as path from 'path';
 import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
 import globalData = require("./count/controlData");
 
-const MINITES = 0; // m 作業時間 52m
-const SECONDS = 3; // s 作業時間
+const MINITES = 52; // m 作業時間 52m
+const SECONDS = 0; // s 作業時間
 const MINITESBREAK = 17; // minute 休憩時間 17m
 const SECONDSBREAK = 0; // second 休憩時間
 let graphPanel: any;
