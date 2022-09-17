@@ -24,7 +24,7 @@ let countEventCont = new count.CountEventController(charCount);
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	contextG = context;
-	
+
 	context.subscriptions.push(countEventCont);
 	let controlData = new globalData.Data(context);
 	charCount.updateHistory(controlData);
@@ -109,13 +109,15 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 	// メッセージを考える
 	const breakMessage: Array<string> = [
 		'休憩してください。',
-		'お疲れ様です。休憩の時間になりました',
+		`お疲れ様です。
+		休憩の時間になりました`,
 		'作業を開始してから' + MINITES + '分経過しました。',
 		'少し休憩しませんか'
 		];
 	const workMessage: Array<string> = [
-		'作業を開始してください。',
-		
+		`休憩終了です！
+		もう少し休みますか？`,
+
 	];
 	const message: string = stateFlag
 		? getRandomMessage(breakMessage)
@@ -124,19 +126,19 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 	clearInterval(id);
 	const window = vscode.window.showInformationMessage(
 		message, { modal: true },
-		{ title: 'いいえ', isCloseAffordance: false },
-		{ title: 'はい', isCloseAffordance: true }
+		{ title: 'はい', isCloseAffordance: false },
+		{ title: 'いいえ', isCloseAffordance: true },
 	);
 
 
 	window.then((value) => {
 		if(stateFlag){
-			if(value?.isCloseAffordance){
+			if(!value?.isCloseAffordance){
 				setTimer(MINITES, SECONDS, false);      // 休憩する
 
 				let input = new globalData.Data(contextG);
-				
-				
+
+
 				input.dataInput(charCount);	// globalStorageに格納する
 
 				// 前回休憩時の文字数と今回の休憩までの文字数の差分を取得
@@ -148,7 +150,7 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 				if(diffOfStr.length > 5) { // 配列の長さが5より大きい場合5になるよう前のデータを消す
 					diffOfStr.shift();
 				}
-				
+
 
 				diffOfLine.push(charCount.calculateDiffLin());
 				if(diffOfLine.length > 5) {
@@ -165,7 +167,7 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 				diffOfLine.push(0);
 				sumOfLine = strLine;
 				*/
-				
+
 
 				// グラフの表示
 				graphPanel = vscode.window.createWebviewPanel(
