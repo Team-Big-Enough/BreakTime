@@ -1,19 +1,16 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 
-import { countReset } from 'console';
-import * as typescript from 'typescript';
 import * as vscode from 'vscode';
 import * as path from 'path';
 import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
 import globalData = require("./count/controlData");
 import sidebar = require("./sidebar/sidebar_webview"); // サイドバー用のモジュール
 
-const MINITES = 0; // m
-const SECONDS = 10; // s
+const MINITESBREAK = 5;
+const MINITESWORKING = 25;
+const SECONDS = 0; // s
 let graphPanel: any;
-let sumOfStr = 0;
-let sumOfLine = 0;
 let diffOfStr = new Array();
 let diffOfLine = new Array();
 let contextG: vscode.ExtensionContext; // deactivate用のExtensionContextを格納するフィールド
@@ -37,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
-	setTimer(MINITES, SECONDS, true);
+	setTimer(MINITESWORKING, SECONDS, true);
 	// リソース解放
 	context.subscriptions.push(vscode.window.registerWebviewViewProvider("left-panel-webview", progressViewProvider));
 
@@ -111,8 +108,8 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 		'休憩してください。',
 		`お疲れ様です。
 		休憩の時間になりました`,
-		'作業を開始してから' + MINITES + '分経過しました。',
-		'少し休憩しませんか'
+		`作業を開始してから` + MINITESWORKING + `分経過しました。
+		少し休憩しませんか`,
 		];
 	const workMessage: Array<string> = [
 		`休憩終了です！
@@ -130,14 +127,12 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 		{ title: 'いいえ', isCloseAffordance: true },
 	);
 
-
 	window.then((value) => {
 		if(stateFlag){
 			if(!value?.isCloseAffordance){
-				setTimer(MINITES, SECONDS, false);      // 休憩する
+				setTimer(MINITESBREAK, SECONDS, false);      // 休憩する
 
 				let input = new globalData.Data(contextG);
-
 
 				input.dataInput(charCount);	// globalStorageに格納する
 
@@ -151,23 +146,11 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 					diffOfStr.shift();
 				}
 
-
 				diffOfLine.push(charCount.calculateDiffLin());
 				if(diffOfLine.length > 5) {
 					diffOfLine.shift();
 				}
 				console.log("lineDiff:" + diffOfLine);
-				/*
-				// 前回休憩時の行数と今回の差分を所得
-				let strLine = charCount.returnLineNum();
-				if(diffOfLine.length > 5) {
-					diffOfLine.shift();
-				}
-				//diffOfLine.push(strLine-sumOfLine);
-				diffOfLine.push(0);
-				sumOfLine = strLine;
-				*/
-
 
 				// グラフの表示
 				graphPanel = vscode.window.createWebviewPanel(
@@ -185,14 +168,14 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 
 				charCount.updateHistory(input); // _allHistoryを更新し次の差分用の比較物を用意する
 			}else{
-				setTimer(MINITES, SECONDS, true); // 休憩せずに作業を続ける
+				setTimer(MINITESWORKING, SECONDS, true); // 休憩せずに作業を続ける
 			}
     	}else{
 			if(value?.isCloseAffordance){
 				graphPanel.dispose();
-				setTimer(MINITES, SECONDS, true);       // 作業する
+				setTimer(MINITESWORKING, SECONDS, true);       // 作業する
 			}else{
-				setTimer(MINITES, SECONDS, false);      // 作業せずに休憩を続ける
+				setTimer(MINITESBREAK, SECONDS, false);      // 作業せずに休憩を続ける
 			}
 			}
 		});
