@@ -111,7 +111,6 @@ export class Data{
             }
 
             //fs.appendFileSync(Data._context.globalStorageUri.fsPath, output); // ファイルに追加書き込みする
-            //console.log(input);
         } // 000000000?undefined-1?234?\n?
 
         this.dataOutput(); // 出力準備も行う
@@ -123,25 +122,13 @@ export class Data{
     public dataOutput(): void{
         fs.appendFileSync(Data._context.globalStorageUri.fsPath, "");
         Data._buffer = fs.readFileSync(Data._context.globalStorageUri.fsPath); // globalStorage内のデータすべてを取り出す
-        //console.log(Buffer.from(Data._buffer).toString());
 
         // 読み込んだデータを扱いやすい型で分けて格納する
         this._dataConvert();
 
-        /*
-        for(let i = 0; i < Data._outputFileName.length; i++){
-            //console.log("file name: " + Data._outputFileName[i] + " num of string:" + Data._strNum[i] + " stamp:" + Data._timestamp[i]);
-        }
-        */
-
         // 扱いやすい型に変換したデータを日ごとにまとめて格納する
         this._sliceDataEachDay();
         console.log(this._dataAfterSliced.length);
-        /*
-        for(let i = 0; i < this._dataAfterSliced.length; i++){
-            //console.log(this._dataAfterSliced[i].timeStamp);
-        }
-        */
     }
 
     /**
@@ -151,7 +138,6 @@ export class Data{
         this._dataBeforeConvert = Buffer.from(Data._buffer).toString(); // String型に変換したバッファのデータを格納
 
         this._mixtureData = this._dataBeforeConvert.split("?");
-        //console.log("dou :" + this._mixtureData[3] + "fow:" + this._mixtureData[4]);
 
         let commDiff = 5;
         for(let i = 0; 4 * i < this._mixtureData.length - 1; i++){
@@ -181,8 +167,6 @@ export class Data{
         else{
             judgement = false;
         }
-
-        //console.log(timeStamp + " judge:" + judgement);
         
         return judgement;
     }

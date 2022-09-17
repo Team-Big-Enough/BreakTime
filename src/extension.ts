@@ -1,19 +1,16 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 
-import { countReset } from 'console';
-import * as typescript from 'typescript';
-import * as vscode from 'vscode';
+import * as vscode from 'vscode'; 
 import * as path from 'path';
 import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
 import globalData = require("./count/controlData");
-import sidebar = require("./sidebar/sidebar_webview"); // サイドバー用のモジュール
 
-const MINITES = 0; // m
-const SECONDS = 10; // s
+const MINITES = 25; // m 作業時間
+const SECONDS = 0; // s 作業時間
+const MINITESBREAK = 5; // minute 休憩時間
+const SECONDSBREAK = 0; // second 休憩時間
 let graphPanel: any;
-let sumOfStr = 0;
-let sumOfLine = 0;
 let diffOfStr = new Array();
 let diffOfLine = new Array();
 let contextG: vscode.ExtensionContext; // deactivate用のExtensionContextを格納するフィールド
@@ -32,14 +29,12 @@ export function activate(context: vscode.ExtensionContext) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "vscode-breaktime" is now active!');
-	const progressViewProvider = new sidebar.ProgressView(context.extensionUri); // github の四角の集合のようなものの表示
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
 	setTimer(MINITES, SECONDS, true);
 	// リソース解放
-	context.subscriptions.push(vscode.window.registerWebviewViewProvider("left-panel-webview", progressViewProvider));
 
 }
 
@@ -134,7 +129,7 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 	window.then((value) => {
 		if(stateFlag){
 			if(!value?.isCloseAffordance){
-				setTimer(MINITES, SECONDS, false);      // 休憩する
+				setTimer(MINITESBREAK, SECONDSBREAK, false);      // 休憩する
 
 				let input = new globalData.Data(contextG);
 
@@ -157,16 +152,6 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 					diffOfLine.shift();
 				}
 				console.log("lineDiff:" + diffOfLine);
-				/*
-				// 前回休憩時の行数と今回の差分を所得
-				let strLine = charCount.returnLineNum();
-				if(diffOfLine.length > 5) {
-					diffOfLine.shift();
-				}
-				//diffOfLine.push(strLine-sumOfLine);
-				diffOfLine.push(0);
-				sumOfLine = strLine;
-				*/
 
 
 				// グラフの表示
@@ -192,7 +177,7 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 				graphPanel.dispose();
 				setTimer(MINITES, SECONDS, true);       // 作業する
 			}else{
-				setTimer(MINITES, SECONDS, false);      // 作業せずに休憩を続ける
+				setTimer(MINITESBREAK, SECONDSBREAK, false);      // 作業せずに休憩を続ける
 			}
 			}
 		});

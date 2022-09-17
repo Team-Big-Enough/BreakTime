@@ -13,28 +13,7 @@
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
-  "contributes": {
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "BreakTimeContainer",
-          "title": "BreakTime",
-          "icon": "./svg/grass-svgrepo-com.svg"
-        }
-      ]
-    },
-    "views": {
-      "BreakTimeContainer": [
-        {
-          "type": "webview",
-          "id": "left-panel-webview",
-          "icon": "src/svg/grass-svgrepo-com.svg",
-          "name": "BreakTime"
-        }
-      ]
-    },
-    "commands": []
-  },
+  "contributes": {},
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",

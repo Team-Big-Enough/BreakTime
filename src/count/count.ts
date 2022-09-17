@@ -51,9 +51,6 @@ export class CharCount{
 			this._nowFileNum = CharCount._assemblyFileName.length - 1; // 現在のファイルを更新
 		}
 
-		//console.log(this._fileName + " ..." + "characters:" + this._stringNum + " lines:" + this._lineNum); // コンソールに現在のファイルの情報を追加
-		//console.log("sum//" + " characters: " + this.returnStrNum() + " lines" + this.returnLineNum());
-
 	}
 
 	/**
