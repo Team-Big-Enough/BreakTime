@@ -1,13 +1,13 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 
-import * as vscode from 'vscode'; 
+import * as vscode from 'vscode';
 import * as path from 'path';
 import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
 import globalData = require("./count/controlData");
 
-const MINITES = 52; // m 作業時間 52m
-const SECONDS = 0; // s 作業時間
+const MINITES = 0; // m 作業時間 52m
+const SECONDS = 3; // s 作業時間
 const MINITESBREAK = 17; // minute 休憩時間 17m
 const SECONDSBREAK = 0; // second 休憩時間
 let graphPanel: any;
@@ -105,8 +105,10 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 	const breakMessage: Array<string> = [
 		'休憩してください。',
 		`お疲れ様です。
-		休憩の時間になりました`,
-		`作業を開始してから` + MINITES + '分経過しました。' + '少し休憩しませんか'
+		休憩の時間になりました。`,
+		`${MINITES}分経過しました。
+		少し休憩しませんか?`,
+		`お腹空いてませんか？`
 		];
 	const workMessage: Array<string> = [
 		`休憩終了です！
