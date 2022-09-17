@@ -6,9 +6,9 @@ import * as path from 'path';
 import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
 import globalData = require("./count/controlData");
 
-const MINITES = 52; // m 作業時間 52m
+const MINITES = 10; // m 作業時間 52m
 const SECONDS = 0; // s 作業時間
-const MINITESBREAK = 17; // minute 休憩時間 17m
+const MINITESBREAK = 5; // minute 休憩時間 17m
 const SECONDSBREAK = 0; // second 休憩時間
 let graphPanel: any;
 let diffOfStr = new Array();
@@ -167,7 +167,17 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 					path.join(contextG.extensionPath, 'src', 'graph.js')
 				);
 				const graphSrc = graphPanel.webview.asWebviewUri(graphPath);
-				graphPanel.webview.html = getWebviewContents(graphSrc, diffOfStr, diffOfLine);
+				let libPath = vscode.Uri.file(
+					path.join(
+						contextG.extensionPath,
+						"node_modules",
+						"chart.js",
+						"dist",
+						"chart.js"
+					)
+				);
+				let scriptUri = graphPanel.webview.asWebviewUri(libPath);
+				graphPanel.webview.html = getWebviewContents(graphSrc, scriptUri, diffOfStr, diffOfLine);
 
 				charCount.updateHistory(input); // _allHistoryを更新し次の差分用の比較物を用意する
 			}else{
@@ -184,7 +194,8 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 		});
 }
 
-function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>, diffOfLine: Array<number>){
+function getWebviewContents(graphSrc: vscode.Uri, scriptUri: vscode.Uri, diffOfStr: Array<number>, diffOfLine: Array<number>){
+
 	return `
 	<!DOCTYPE html>
 	<html lang="en">
@@ -202,7 +213,7 @@ function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>, diff
 		var diffOfStr = `+  JSON.stringify(diffOfStr) +`;
 		var diffOfLine = `+  JSON.stringify(diffOfLine) +`;
 		</script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
+		<script src="${scriptUri}"></script>
 		<script src=` + graphSrc + `></script>
 	</body>
 	</html>
