@@ -8,7 +8,7 @@ import globalData = require("./count/controlData");
 
 const MINITES = 10; // m 作業時間 52m
 const SECONDS = 0; // s 作業時間
-const MINITESBREAK = 5; // minute 休憩時間 17m
+const MINITESBREAK = 17; // minute 休憩時間 17m
 const SECONDSBREAK = 0; // second 休憩時間
 let graphPanel: any;
 let diffOfStr = new Array();
