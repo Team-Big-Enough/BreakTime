@@ -164,7 +164,7 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 				);
 
 				const graphPath = vscode.Uri.file(
-					path.join(contextG.extensionPath, 'src', 'graph.js')
+					path.join(contextG.extensionPath, 'graph', 'graph.js')
 				);
 				const graphSrc = graphPanel.webview.asWebviewUri(graphPath);
 				let libPath = vscode.Uri.file(
