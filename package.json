@@ -29,22 +29,22 @@
           "time.breakMinutes": {
             "type": "number",
             "description": "休憩時間(分)． The minites of your breaktime.",
-            "default": "0"
+            "default": "17"
           },
           "time.breakSeconds": {
             "type": "number",
             "description": "休憩時間(秒)． The seconds of your breaktime.",
-            "default": "10"
+            "default": "0"
           },
           "time.workMinutes": {
             "type": "number",
             "description": "作業時間(分)． The minites of your work-time.",
-            "default": "0"
+            "default": "52"
           },
           "time.workSeconds": {
             "type": "number",
             "description": "作業時間(秒)． The seconds of your work-time.",
-            "default": "10"
+            "default": "0"
           }
         }
       }
