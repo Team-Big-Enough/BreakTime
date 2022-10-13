@@ -5,11 +5,30 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
 import globalData = require("./count/controlData");
+import * as test from "chart.js";
 
-const MINITES = 10; // m 作業時間 52m
-const SECONDS = 0; // s 作業時間
-const MINITESBREAK = 17; // minute 休憩時間 17m
-const SECONDSBREAK = 0; // second 休憩時間
+const optionTime = vscode.workspace.getConfiguration("time");
+
+let tempWorkMinute, tempWorkSecond, tempBreakMinute, tempBreakSecond;
+tempWorkMinute = optionTime.get<number>("workMinutes"); // m 作業時間
+tempWorkSecond = optionTime.get<number>("workSeconds"); // s 作業時間
+tempBreakMinute = optionTime.get<number>("breakMinutes"); // m 休憩時間
+tempBreakSecond = optionTime.get<number>("breakSeconds"); // s 休憩時間
+if(tempWorkMinute === void 0
+|| tempWorkSecond === void 0 
+|| tempBreakMinute === void 0 
+|| tempBreakSecond === void 0
+){
+	tempWorkMinute = 52;
+	tempWorkSecond = 0;
+	tempBreakMinute = 17;
+	tempBreakSecond = 0;
+}
+const MINUTES = tempWorkMinute; // m 作業時間 default 52m
+const SECONDS = tempWorkSecond; // s 作業時間
+const MINUTESBREAK = tempBreakMinute; // minute 休憩時間 default 17m
+const SECONDSBREAK = tempBreakSecond; // second 休憩時間
+
 let graphPanel: any;
 let diffOfStr = new Array();
 let diffOfLine = new Array();
@@ -33,7 +52,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
-	setTimer(MINITES, SECONDS, true);
+	setTimer(MINUTES, SECONDS, true);
 	// リソース解放
 
 }
@@ -106,7 +125,7 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 		'休憩してください。',
 		`お疲れ様です。
 		休憩の時間になりました。`,
-		`${MINITES}分経過しました。
+		`${MINUTES}分経過しました。
 		少し休憩しませんか?`,
 		`お腹空いてませんか？`
 		];
@@ -130,7 +149,7 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 	window.then((value) => {
 		if(stateFlag){
 			if(!value?.isCloseAffordance){
-				setTimer(MINITESBREAK, SECONDSBREAK, false);      // 休憩する
+				setTimer(MINUTESBREAK, SECONDSBREAK, false);      // 休憩する
 
 				let input = new globalData.Data(contextG);
 
@@ -166,35 +185,27 @@ function clearTimer(id: NodeJS.Timer, stateFlag: boolean){
 				const graphPath = vscode.Uri.file(
 					path.join(contextG.extensionPath, 'graph', 'graph.js')
 				);
+				console.log("graphPath");
+				console.log(graphPath);
 				const graphSrc = graphPanel.webview.asWebviewUri(graphPath);
-				let libPath = vscode.Uri.file(
-					path.join(
-						contextG.extensionPath,
-						"node_modules",
-						"chart.js",
-						"dist",
-						"chart.js"
-					)
-				);
-				let scriptUri = graphPanel.webview.asWebviewUri(libPath);
-				graphPanel.webview.html = getWebviewContents(graphSrc, scriptUri, diffOfStr, diffOfLine);
+				graphPanel.webview.html = getWebviewContents(graphSrc, diffOfStr, diffOfLine);
 
 				charCount.updateHistory(input); // _allHistoryを更新し次の差分用の比較物を用意する
 			}else{
-				setTimer(MINITES, SECONDS, true); // 休憩せずに作業を続ける
+				setTimer(MINUTES, SECONDS, true); // 休憩せずに作業を続ける
 			}
     	}else{
 			if(value?.isCloseAffordance){
 				graphPanel.dispose();
-				setTimer(MINITES, SECONDS, true);       // 作業する
+				setTimer(MINUTES, SECONDS, true);       // 作業する
 			}else{
-				setTimer(MINITESBREAK, SECONDSBREAK, false);      // 作業せずに休憩を続ける
+				setTimer(MINUTESBREAK, SECONDSBREAK, false);      // 作業せずに休憩を続ける
 			}
 			}
 		});
 }
 
-function getWebviewContents(graphSrc: vscode.Uri, scriptUri: vscode.Uri, diffOfStr: Array<number>, diffOfLine: Array<number>){
+function getWebviewContents(graphSrc: vscode.Uri, diffOfStr: Array<number>, diffOfLine: Array<number>){
 
 	return `
 	<!DOCTYPE html>
@@ -213,7 +224,7 @@ function getWebviewContents(graphSrc: vscode.Uri, scriptUri: vscode.Uri, diffOfS
 		var diffOfStr = `+  JSON.stringify(diffOfStr) +`;
 		var diffOfLine = `+  JSON.stringify(diffOfLine) +`;
 		</script>
-		<script src="${scriptUri}"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
 		<script src=` + graphSrc + `></script>
 	</body>
 	</html>
