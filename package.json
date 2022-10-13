@@ -3,7 +3,7 @@
   "publisher": "BigEnoughJapan",
   "displayName": "BreakTime",
   "description": "breaktime",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.71.0"
   },
@@ -18,7 +18,38 @@
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
-  "contributes": {},
+  "bugs": {
+    "url": "https://github.com/Team-Big-Enough/BreakTime/issues"
+  },
+  "contributes": {
+    "configuration": [
+      {
+        "title": "BreakTimeOptions",
+        "properties": {
+          "time.breakMinutes": {
+            "type": "number",
+            "description": "休憩時間(分)． The minites of your breaktime.",
+            "default": "0"
+          },
+          "time.breakSeconds": {
+            "type": "number",
+            "description": "休憩時間(秒)． The seconds of your breaktime.",
+            "default": "10"
+          },
+          "time.workMinutes": {
+            "type": "number",
+            "description": "作業時間(分)． The minites of your work-time.",
+            "default": "0"
+          },
+          "time.workSeconds": {
+            "type": "number",
+            "description": "作業時間(秒)． The seconds of your work-time.",
+            "default": "10"
+          }
+        }
+      }
+    ]
+  },
   "scripts": {
     "vscode:prepublish": "webpack --mode production",
     "compile": "webpack",
@@ -35,7 +66,7 @@
   "devDependencies": {
     "@types/glob": "^8.0.0",
     "@types/mocha": "^9.1.1",
-    "@types/node": "^18.7.18",
+    "@types/node": "^18.8.5",
     "@types/vscode": "^1.71.0",
     "@typescript-eslint/eslint-plugin": "^5.36.2",
     "@typescript-eslint/parser": "^5.36.2",
