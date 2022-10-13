@@ -3,7 +3,7 @@
   "publisher": "BigEnoughJapan",
   "displayName": "BreakTime",
   "description": "breaktime",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "engines": {
     "vscode": "^1.71.0"
   },
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/maple-fm/BreakTime"
+    "url": "https://github.com/Team-Big-Enough/BreakTime"
   },
   "activationEvents": [
     "onStartupFinished"
