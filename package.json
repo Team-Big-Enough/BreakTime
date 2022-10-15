@@ -45,6 +45,11 @@
             "type": "number",
             "description": "作業時間(秒)． The seconds of your work-time.",
             "default": "0"
+          },
+          "music.autoStart": {
+            "type": "boolean",
+            "description": "(未実装 unimplemented)休憩時間の間のみ自動で音楽を再生するか． Auto-play music during your breaktime",
+            "default": "true"
           }
         }
       }
