@@ -4,7 +4,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import count = require('./count/count'); // count.tsにある文字数カウントクラスなどをインポート
-import globalData = require("./count/controlData");
+import globalData = require("./count/controlData"); //
 
 const MINITES = 52; // m 作業時間 52m
 const SECONDS = 0; // s 作業時間
